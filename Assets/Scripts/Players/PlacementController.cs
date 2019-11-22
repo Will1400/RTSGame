@@ -15,17 +15,13 @@ public class PlacementController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 currentObject = Instantiate(BuildingManager.Instance.GetBuilding("Building"), CameraController.Instance.Player.BuildingHolder);
+                CameraController.Instance.CursorState = CursorState.Building;
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 currentObject = Instantiate(UnitManager.Instance.GetUnit("Unit"), CameraController.Instance.Player.UnitHolder);
+                CameraController.Instance.CursorState = CursorState.Building;
             }
-            else
-            {
-                return;
-            }
-
-            CameraController.Instance.CursorState = CursorState.Building;
 
             if (currentObject == null)
                 CameraController.Instance.CursorState = CursorState.None;

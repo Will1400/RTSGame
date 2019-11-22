@@ -21,8 +21,6 @@ public class Player : MonoBehaviour
         {
             Team = transform.parent.GetComponent<Team>();
         }
-
-      
     }
 
     public void Initialize(GameObject HQ) 
