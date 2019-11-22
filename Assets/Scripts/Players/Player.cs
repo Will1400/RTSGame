@@ -13,12 +13,21 @@ public class Player : MonoBehaviour
     private List<GameObject> Buildings;
     private List<GameObject> Units;
 
-    private void Start()
+    private GameObject HQ;
+
+    private void Awake()
     {
         if (Team == null)
         {
             Team = transform.parent.GetComponent<Team>();
         }
+
+      
+    }
+
+    public void Initialize(GameObject HQ) 
+    {
+        this.HQ = HQ;
 
         if (GameObject.Find("Buildings"))
             BuildingHolder = GameObject.Find("Buildings").transform;

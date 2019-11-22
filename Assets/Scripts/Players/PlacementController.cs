@@ -48,7 +48,7 @@ public class PlacementController : MonoBehaviour
             MoveBuildingToMouse();
 
             if (Input.GetMouseButtonDown(0) && currentPlacementValidator.IsValidPosition())
-                PlaceBuilding();
+                PlaceCurrentObject();
         }
     }
 
@@ -62,7 +62,7 @@ public class PlacementController : MonoBehaviour
         }
     }
 
-    void PlaceBuilding()
+    void PlaceCurrentObject()
     {
         Destroy(currentPlacementValidator);
         Destroy(currentObject.GetComponent<Rigidbody>());

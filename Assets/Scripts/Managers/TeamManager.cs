@@ -19,14 +19,10 @@ public class TeamManager : MonoBehaviour
             Instance = this;
         else if (Instance != this)
             Destroy(gameObject);
-    }
 
-    private void Start()
-    {
         if (GameObject.Find("Teams"))
             TeamsHolder = GameObject.Find("Teams").transform;
         else
             TeamsHolder = new GameObject("Teams").transform;
-
     }
 }

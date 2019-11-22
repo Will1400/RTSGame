@@ -177,6 +177,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 100539503}
+  - component: {fileID: 100539506}
   - component: {fileID: 100539504}
   - component: {fileID: 100539502}
   - component: {fileID: 100539505}
@@ -213,6 +214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingPrefabs:
+  - {fileID: 4997460111580119232, guid: d35bae8fa64155942b71ea162c96a72f, type: 3}
   - {fileID: 5514335657491701633, guid: 4662c24eec52c4d4e85790b6d2ffb6f5, type: 3}
 --- !u!4 &100539503
 Transform:
@@ -241,7 +243,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Teams:
-  - {fileID: 0}
+  - {fileID: 1466647758}
+  - {fileID: 280621441}
   TeamsHolder: {fileID: 311354821}
 --- !u!114 &100539505
 MonoBehaviour:
@@ -257,6 +260,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitPrefabs:
   - {fileID: 5514335657491701633, guid: f32d1cad09c556041830ec3f0b7e38bd, type: 3}
+--- !u!114 &100539506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100539500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b80b93ca2f696cb44ae1efadc00f575f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnPoints:
+  - {fileID: 346971775}
+  - {fileID: 257748009}
 --- !u!1 &112616156
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,8 +315,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 257748009}
+  - component: {fileID: 257748010}
   m_Layer: 0
-  m_Name: Base 1 (1)
+  m_Name: Base 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -318,6 +337,20 @@ Transform:
   m_Father: {fileID: 923961092}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &257748010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257748008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35144c5e5867d4449a31fca1ad5377fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IconName: Base.jpg
+  offset: {x: 0, y: 0.7, z: 0}
 --- !u!1 &280621439
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,6 +439,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 346971775}
+  - component: {fileID: 346971776}
   m_Layer: 0
   m_Name: Base 1
   m_TagString: Untagged
@@ -427,6 +461,20 @@ Transform:
   m_Father: {fileID: 923961092}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &346971776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 346971774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35144c5e5867d4449a31fca1ad5377fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IconName: Base.jpg
+  offset: {x: 0, y: 0.7, z: 0}
 --- !u!1 &524507803
 GameObject:
   m_ObjectHideFlags: 0
