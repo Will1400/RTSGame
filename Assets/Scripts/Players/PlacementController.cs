@@ -1,25 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlacementManager : MonoBehaviour
+public class PlacementController : MonoBehaviour
 {
     private GameObject currentObject;
-    private PlacingBuilding currentPlacingBuilding;
+    private PlacementValidator currentPlacementValidator;
 
     bool isColliderTrigger;
 
     void Update()
     {
-        if (CameraController.Instance.CursorState == CursorState.None && Input.GetKeyDown(KeyCode.Alpha1))
+        if (CameraController.Instance.CursorState == CursorState.None)
         {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                currentObject = Instantiate(BuildingManager.Instance.GetBuilding("Building"), CameraController.Instance.Player.BuildingHolder);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                currentObject = Instantiate(UnitManager.Instance.GetUnit("Unit"), CameraController.Instance.Player.UnitHolder);
+            }
+            else
+            {
+                return;
+            }
+
             CameraController.Instance.CursorState = CursorState.Building;
-            currentObject = Instantiate(BuildingManager.Instance.GetBuilding("Building"));
 
             if (currentObject == null)
                 CameraController.Instance.CursorState = CursorState.None;
             else
             {
-                currentPlacingBuilding = currentObject.AddComponent<PlacingBuilding>();
+                currentPlacementValidator = currentObject.AddComponent<PlacementValidator>();
                 currentObject.AddComponent<Rigidbody>().isKinematic = true;
 
                 var rb = currentObject.GetComponent<Collider>();
@@ -35,7 +47,7 @@ public class PlacementManager : MonoBehaviour
 
             MoveBuildingToMouse();
 
-            if (Input.GetMouseButtonDown(0) && currentPlacingBuilding.Colliders.Count == 0)
+            if (Input.GetMouseButtonDown(0) && currentPlacementValidator.Colliders.Count == 0)
                 PlaceBuilding();
         }
     }
@@ -52,7 +64,7 @@ public class PlacementManager : MonoBehaviour
 
     void PlaceBuilding()
     {
-        Destroy(currentPlacingBuilding);
+        Destroy(currentPlacementValidator);
         Destroy(currentObject.GetComponent<Rigidbody>());
 
         currentObject.GetComponent<Collider>().isTrigger = false;

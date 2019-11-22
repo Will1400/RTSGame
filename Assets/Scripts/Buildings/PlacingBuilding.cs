@@ -2,10 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class PlacingBuilding : MonoBehaviour
+public class PlacementValidator : MonoBehaviour
 {
     public List<Collider> Colliders;
-
 
     private void Start()
     {

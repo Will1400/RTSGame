@@ -8,6 +8,7 @@ public class CameraController : MonoBehaviour
 
     public CursorState CursorState;
 
+    public Player Player;
 
     private void Awake()
     {
