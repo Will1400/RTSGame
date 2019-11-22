@@ -47,7 +47,7 @@ public class PlacementController : MonoBehaviour
 
             MoveBuildingToMouse();
 
-            if (Input.GetMouseButtonDown(0) && currentPlacementValidator.Colliders.Count == 0)
+            if (Input.GetMouseButtonDown(0) && currentPlacementValidator.IsValidPosition())
                 PlaceBuilding();
         }
     }

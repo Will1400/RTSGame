@@ -4,18 +4,18 @@ using System.Collections.Generic;
 
 public class PlacementValidator : MonoBehaviour
 {
-    public List<Collider> Colliders;
+    private List<Collider> colliders;
 
     private void Start()
     {
-        Colliders = new List<Collider>();
+        colliders = new List<Collider>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Building")
         {
-            Colliders.Add(other);
+            colliders.Add(other);
         }
     }
 
@@ -23,7 +23,12 @@ public class PlacementValidator : MonoBehaviour
     {
         if (other.tag == "Building")
         {
-            Colliders.Remove(other);
+            colliders.Remove(other);
         }
+    }
+
+    public bool IsValidPosition()
+    {
+        return colliders.Count == 0;
     }
 }
