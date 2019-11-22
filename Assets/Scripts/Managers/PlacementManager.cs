@@ -13,7 +13,7 @@ public class PlacementManager : MonoBehaviour
         if (CameraController.Instance.CursorState == CursorState.None && Input.GetKeyDown(KeyCode.Alpha1))
         {
             CameraController.Instance.CursorState = CursorState.Building;
-            currentObject = Instantiate(BuildingManager.Instance.GetBuilding("TestBuilding"));
+            currentObject = Instantiate(BuildingManager.Instance.GetBuilding("Building"));
 
             if (currentObject == null)
                 CameraController.Instance.CursorState = CursorState.None;

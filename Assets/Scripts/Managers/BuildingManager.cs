@@ -20,6 +20,6 @@ public class BuildingManager : MonoBehaviour
 
     public GameObject GetBuilding(string buildingName)
     {
-        return buildingPrefabs.First();
+        return buildingPrefabs.First(x => x.name == buildingName);
     }
 }
