@@ -37,4 +37,9 @@ public class Player : MonoBehaviour
         else
             UnitHolder = new GameObject("Units").transform;
     }
+
+    public bool IsOnSameTeam(IControlledByPlayer first, IControlledByPlayer second)
+    {
+        return first.Owner.Team == second.Owner.Team;
+    }
 }
