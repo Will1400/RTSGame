@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer
 {
     #region Fields
+    [SerializeField]
     protected Player owner;
 
     [SerializeField]
@@ -72,16 +73,17 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer
     protected void GetNearbyTarget()
     {
         // Gets all possible targets not controlled by the team
-        Collider[] possibleTargets = Physics.OverlapSphere(transform.position, range, LayerMask.GetMask("Units", "Buildings")).Where(x => !owner.IsOnSameTeam(this, x.GetComponent<IControlledByPlayer>())).ToArray();
+        var possibleTargets = Physics.OverlapSphere(transform.position, range, LayerMask.GetMask("Units", "Buildings")).Where(x => x.GetComponent<IControlledByPlayer>() != null).ToList();
+        possibleTargets.RemoveAll(x => Player.IsOnSameTeam(this, x.GetComponent<IControlledByPlayer>()));
 
         float shortestDistance = Mathf.Infinity;
-        foreach (var target in possibleTargets.Select(x => x.transform))
+        foreach (var target in possibleTargets)
         {
-            float distanceToEnemy = Vector3.Distance(transform.position, target.position);
+            float distanceToEnemy = Vector3.Distance(transform.position, target.transform.position);
             if (distanceToEnemy < shortestDistance)
             {
                 shortestDistance = distanceToEnemy;
-                this.target = target;
+                this.target = target.transform;
             }
         }
     }
@@ -98,5 +100,10 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer
             agent = _agent;
             agent.speed = speed;
         }
+    }
+
+    protected bool IsTargetOutOfRange()
+    {
+        return target != null && Vector3.Distance(transform.position, target.position) > range;
     }
 }
