@@ -5,8 +5,9 @@ using UnityEngine;
 public interface IDamageable
 {
 
-    public float Defense { get; set; }
-    public DefenseType DefenseType { get; set; }
+    float Health { get; set; }
+    float Defense { get; set; }
+    DefenseType DefenseType { get; set; }
 
     void Damage(float amount, DamageType damageType);
 }
