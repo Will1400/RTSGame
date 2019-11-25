@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MeleeUnit : Unit
 {
+
+
     protected virtual void Update()
     {
         if (IsTargetOutOfRange())
@@ -14,7 +16,19 @@ public class MeleeUnit : Unit
 
         if (target != null)
         {
-            agent.SetDestination(target.position);
+            if (CanAttackTarget())
+            {
+                AttackTarget();
+                if (agent.hasPath)
+                {
+                    agent.ResetPath();
+                }
+            }
+            else
+            {
+                MoveToPosition(target.position);
+            }
+
         }
         else
         {

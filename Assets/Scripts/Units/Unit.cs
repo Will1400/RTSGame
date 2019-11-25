@@ -25,10 +25,17 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer
     protected DamageType damageType;
 
     [SerializeField]
-    protected float range;
+    protected float visionRange;
+
+    [SerializeField]
+    protected float attackRange;
 
     [SerializeField]
     protected float speed;
+
+    [SerializeField]
+    protected float attackRate;
+    protected float nextAttack;
 
     [SerializeField]
     protected float defense;
@@ -67,13 +74,54 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer
 
     public virtual void Damage(float amount, DamageType damageType)
     {
+        switch (defenseType)
+        {
+            case DefenseType.All:
+                amount -= defense;
+                break;
+            case DefenseType.AllLight:
+                if (damageType.HasFlag(DamageType.LightMelee) || damageType.HasFlag(DamageType.LightRanged))
+                    amount -= defense;
+                break;
+            case DefenseType.AllHeavy:
+                if (damageType.HasFlag(DamageType.HeavyMelee) || damageType.HasFlag(DamageType.HeavyRanged))
+                    amount -= defense;
+                break;
+            case DefenseType.LightMelee:
+                if (damageType.HasFlag(DamageType.LightMelee))
+                    amount -= defense;
+                break;
+            case DefenseType.HeavyMelee:
+                if (damageType.HasFlag(DamageType.HeavyMelee))
+                    amount -= defense;
+                break;
+            case DefenseType.LightRanged:
+                if (damageType.HasFlag(DamageType.LightRanged))
+                    amount -= defense;
+                break;
+            case DefenseType.HeavyRanged:
+                if (damageType.HasFlag(DamageType.HeavyRanged))
+                    amount -= defense;
+                break;
+            default:
+                break;
+        }
 
+        if (amount < 0)
+            amount = 0;
+
+        health -= amount;
+
+        if (health <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     protected void GetNearbyTarget()
     {
         // Gets all possible targets not controlled by the team
-        var possibleTargets = Physics.OverlapSphere(transform.position, range, LayerMask.GetMask("Units", "Buildings")).Where(x => x.GetComponent<IControlledByPlayer>() != null).ToList();
+        var possibleTargets = Physics.OverlapSphere(transform.position, visionRange, LayerMask.GetMask("Units", "Buildings")).Where(x => x.GetComponent<IControlledByPlayer>() != null).ToList();
         possibleTargets.RemoveAll(x => Player.IsOnSameTeam(this, x.GetComponent<IControlledByPlayer>()));
 
         float shortestDistance = Mathf.Infinity;
@@ -95,7 +143,7 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer
 
     protected virtual void Setup()
     {
-        if (TryGetComponent<NavMeshAgent>(out NavMeshAgent _agent))
+        if (TryGetComponent(out NavMeshAgent _agent))
         {
             agent = _agent;
             agent.speed = speed;
@@ -104,6 +152,39 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer
 
     protected bool IsTargetOutOfRange()
     {
-        return target != null && Vector3.Distance(transform.position, target.position) > range;
+        return target != null && Vector3.Distance(transform.position, target.position) > visionRange;
     }
+
+    public virtual void MoveToPosition(Vector3 pos)
+    {
+        agent.SetDestination(pos);
+    }
+
+    public virtual void MoveIntoAttackRange()
+    {
+        Vector3 targetPosition = target.position + ((transform.position - target.position).normalized * attackRange);
+        MoveToPosition(targetPosition);
+    }
+
+    /// <summary>
+    /// Checks if the current target can be attacked from current position
+    /// </summary>
+    /// <returns>True if the target can be attacked</returns>
+    protected bool CanAttackTarget()
+    {
+        return target != null && nextAttack < Time.time && Vector3.Distance(transform.position, target.position) <= attackRange;
+    }
+
+    /// <summary>
+    /// Attacks the current target without any checks
+    /// </summary>
+    protected void AttackTarget()
+    {
+        if (target == null)
+            return;
+
+        target.GetComponent<IDamageable>().Damage(damage, damageType);
+        nextAttack = Time.time + attackRate;
+    }
+
 }

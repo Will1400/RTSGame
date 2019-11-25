@@ -200,13 +200,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf5d92aaee87a9f4a89c1f2a1ce1a558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  owner: {fileID: 0}
   unitName: Swordmen
   cost: 5
   health: 200
   damage: 30
   damageType: 1
-  range: 1
+  visionRange: 10
+  attackRange: 1
   speed: 2
+  attackRate: 1
   defense: 10
   defenseType: 3
 --- !u!195 &2445034880985349712
