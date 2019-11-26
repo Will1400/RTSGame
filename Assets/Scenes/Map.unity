@@ -260,6 +260,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b80b93ca2f696cb44ae1efadc00f575f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CursorState: 0
+  ControllingPlayer: {fileID: 1632863572}
   spawnPoints:
   - {fileID: 346971775}
   - {fileID: 257748009}
@@ -877,8 +879,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 241056d4fb514354b8db464f3cc1b44a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CursorState: 0
-  Player: {fileID: 1632863572}
 --- !u!1 &1440867337
 GameObject:
   m_ObjectHideFlags: 0

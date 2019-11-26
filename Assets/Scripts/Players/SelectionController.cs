@@ -16,13 +16,13 @@ public class SelectionController : MonoBehaviour
 
     [SerializeField, ReadOnly]
     private bool isDragging = false;
-    private Vector3 mousePositon;
+    private Vector3 startingDragPosition;
 
     private void OnGUI()
     {
         if (isDragging && GameManager.Instance.CursorState == CursorState.Selecting)
         {
-            var rect = ScreenHelper.GetScreenRect(mousePositon, Input.mousePosition);
+            var rect = ScreenHelper.GetScreenRect(startingDragPosition, Input.mousePosition);
             ScreenHelper.DrawScreenRect(rect, centerColor);
             ScreenHelper.DrawScreenRectBorder(rect, 1, borderColor);
         }
@@ -30,10 +30,14 @@ public class SelectionController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetButton("Escape") || Input.GetButton("Secondary Mouse"))
+        {
+            isDragging = false;
+        }
 
         if (Input.GetButtonDown("Primary Mouse"))
         {
-            mousePositon = Input.mousePosition;
+            startingDragPosition = Input.mousePosition;
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out RaycastHit hit))
@@ -62,7 +66,9 @@ public class SelectionController : MonoBehaviour
         {
             if (isDragging)
             {
-                DeselectAll();
+                if (!Input.GetButton("MultiSelect"))
+                    DeselectAll();
+
                 foreach (var selectableObject in GameManager.Instance.ControllingPlayer.Units)
                 {
                     if (IsWithinSelectionBounds(selectableObject.transform))
@@ -95,6 +101,7 @@ public class SelectionController : MonoBehaviour
         for (int i = 0; i < selected.Count; i++)
         {
             Deselect(selected[i]);
+            i--;
         }
         selected.Clear();
     }
@@ -102,6 +109,7 @@ public class SelectionController : MonoBehaviour
     private void Deselect(Transform selectable)
     {
         selectable.GetComponent<ISelectable>().Deselect();
+        selected.Remove(selectable);
     }
 
     private bool IsWithinSelectionBounds(Transform transform)
@@ -110,7 +118,7 @@ public class SelectionController : MonoBehaviour
             return false;
 
         var camera = Camera.main;
-        var viewportBounds = ScreenHelper.GetViewportBounds(camera, mousePositon, Input.mousePosition);
+        var viewportBounds = ScreenHelper.GetViewportBounds(camera, startingDragPosition, Input.mousePosition);
         return viewportBounds.Contains(camera.WorldToViewportPoint(transform.position));
     }
 }

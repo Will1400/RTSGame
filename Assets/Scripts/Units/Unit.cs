@@ -155,6 +155,7 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
             agent = _agent;
             agent.speed = speed;
         }
+        Material = new Material(GetComponent<Renderer>().material);
     }
 
     protected bool IsTargetOutOfRange()
@@ -197,7 +198,6 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
     public void Select()
     {
         Renderer renderer = GetComponent<MeshRenderer>();
-        Material = new Material(renderer.material);
         renderer.material.SetColor("_BaseColor", Color.green);
         IsSelected = true;
     }
