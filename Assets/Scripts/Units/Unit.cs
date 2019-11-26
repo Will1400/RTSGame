@@ -3,7 +3,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine.AI;
 
-public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer
+public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, ISelectable
 {
     #region Fields
     [SerializeField]
@@ -35,7 +35,6 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer
 
     [SerializeField]
     protected float attackRate;
-    protected float nextAttack;
 
     [SerializeField]
     protected float defense;
@@ -45,8 +44,14 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer
 
     protected Transform target;
 
+    protected float nextAttack;
+
     protected NavMeshAgent agent;
+
+    protected LineRenderer lineRenderer;
     #endregion
+
+    private Material Material;
 
     public Player Owner
     {
@@ -71,6 +76,8 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer
         get { return defenseType; }
         set { defenseType = value; }
     }
+
+    public bool IsSelected { get; set; }
 
     public virtual void Damage(float amount, DamageType damageType)
     {
@@ -187,4 +194,17 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer
         nextAttack = Time.time + attackRate;
     }
 
+    public void Select()
+    {
+        Renderer renderer = GetComponent<MeshRenderer>();
+        Material = new Material(renderer.material);
+        renderer.material.SetColor("_BaseColor", Color.green);
+        IsSelected = true;
+    }
+
+    public void Deselect()
+    {
+        GetComponent<MeshRenderer>().material = Material;
+        IsSelected = false;
+    }
 }

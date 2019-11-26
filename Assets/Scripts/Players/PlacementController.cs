@@ -15,11 +15,14 @@ public class PlacementController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 currentObject = Instantiate(BuildingManager.Instance.GetBuilding("Building"), CameraController.Instance.Player.BuildingHolder);
+                CameraController.Instance.Player.Buildings.Add(currentObject);
                 CameraController.Instance.CursorState = CursorState.Building;
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                currentObject = Instantiate(UnitManager.Instance.GetUnit("Unit"), CameraController.Instance.Player.UnitHolder);
+                currentObject = Instantiate(UnitManager.Instance.GetUnit("Swordmen"), CameraController.Instance.Player.UnitHolder);
+                currentObject.GetComponent<Unit>().Owner = CameraController.Instance.Player;
+                CameraController.Instance.Player.Units.Add(currentObject);
                 CameraController.Instance.CursorState = CursorState.Building;
             }
 

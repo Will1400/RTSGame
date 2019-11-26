@@ -10,8 +10,8 @@ public class Player : MonoBehaviour
     public Transform BuildingHolder;
     public Transform UnitHolder;
 
-    private List<GameObject> Buildings;
-    private List<GameObject> Units;
+    public List<GameObject> Buildings;
+    public List<GameObject> Units;
 
     private GameObject HQ;
 
@@ -21,9 +21,11 @@ public class Player : MonoBehaviour
         {
             Team = transform.parent.GetComponent<Team>();
         }
+        Buildings = Buildings ?? new List<GameObject>();
+        Units = Units ?? new List<GameObject>();
     }
 
-    public void Initialize(GameObject HQ) 
+    public void Initialize(GameObject HQ)
     {
         this.HQ = HQ;
 
