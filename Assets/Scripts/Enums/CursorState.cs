@@ -5,5 +5,6 @@ using UnityEngine;
 public enum CursorState
 {
     None,
-    Building
+    Building,
+    Selecting
 }

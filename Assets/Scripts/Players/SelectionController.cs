@@ -20,7 +20,7 @@ public class SelectionController : MonoBehaviour
 
     private void OnGUI()
     {
-        if (isDragging)
+        if (isDragging && GameManager.Instance.CursorState == CursorState.Selecting)
         {
             var rect = ScreenHelper.GetScreenRect(mousePositon, Input.mousePosition);
             ScreenHelper.DrawScreenRect(rect, centerColor);
@@ -52,6 +52,7 @@ public class SelectionController : MonoBehaviour
                 else
                 {
                     isDragging = true;
+                    GameManager.Instance.CursorState = CursorState.Selecting;
                 }
             }
 
@@ -62,7 +63,7 @@ public class SelectionController : MonoBehaviour
             if (isDragging)
             {
                 DeselectAll();
-                foreach (var selectableObject in CameraController.Instance.Player.Units)
+                foreach (var selectableObject in GameManager.Instance.ControllingPlayer.Units)
                 {
                     if (IsWithinSelectionBounds(selectableObject.transform))
                     {
@@ -71,6 +72,7 @@ public class SelectionController : MonoBehaviour
                 }
 
                 isDragging = false;
+                GameManager.Instance.CursorState = CursorState.None;
             }
 
         }

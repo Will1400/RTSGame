@@ -10,24 +10,24 @@ public class PlacementController : MonoBehaviour
 
     void Update()
     {
-        if (CameraController.Instance.CursorState == CursorState.None)
+        if (GameManager.Instance.CursorState == CursorState.None)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                currentObject = Instantiate(BuildingManager.Instance.GetBuilding("Building"), CameraController.Instance.Player.BuildingHolder);
-                CameraController.Instance.Player.Buildings.Add(currentObject);
-                CameraController.Instance.CursorState = CursorState.Building;
+                currentObject = Instantiate(BuildingManager.Instance.GetBuilding("Building"), GameManager.Instance.ControllingPlayer.BuildingHolder);
+                GameManager.Instance.ControllingPlayer.Buildings.Add(currentObject);
+                GameManager.Instance.CursorState = CursorState.Building;
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                currentObject = Instantiate(UnitManager.Instance.GetUnit("Swordmen"), CameraController.Instance.Player.UnitHolder);
-                currentObject.GetComponent<Unit>().Owner = CameraController.Instance.Player;
-                CameraController.Instance.Player.Units.Add(currentObject);
-                CameraController.Instance.CursorState = CursorState.Building;
+                currentObject = Instantiate(UnitManager.Instance.GetUnit("Swordmen"), GameManager.Instance.ControllingPlayer.UnitHolder);
+                currentObject.GetComponent<Unit>().Owner = GameManager.Instance.ControllingPlayer;
+                GameManager.Instance.ControllingPlayer.Units.Add(currentObject);
+                GameManager.Instance.CursorState = CursorState.Building;
             }
 
             if (currentObject == null)
-                CameraController.Instance.CursorState = CursorState.None;
+                GameManager.Instance.CursorState = CursorState.None;
             else
             {
                 currentPlacementValidator = currentObject.AddComponent<PlacementValidator>();
@@ -39,7 +39,7 @@ public class PlacementController : MonoBehaviour
             }
         }
 
-        if (CameraController.Instance.CursorState == CursorState.Building)
+        if (GameManager.Instance.CursorState == CursorState.Building)
         {
             if (Input.GetMouseButtonDown(1))
                 CancelBuild();
@@ -72,12 +72,12 @@ public class PlacementController : MonoBehaviour
             currentObject.GetComponent<Collider>().isTrigger = false;
 
         currentObject = null;
-        CameraController.Instance.CursorState = CursorState.None;
+        GameManager.Instance.CursorState = CursorState.None;
     }
 
     void CancelBuild()
     {
         Destroy(currentObject);
-        CameraController.Instance.CursorState = CursorState.None;
+        GameManager.Instance.CursorState = CursorState.None;
     }
 }
