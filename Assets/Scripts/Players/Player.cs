@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -12,6 +13,14 @@ public class Player : MonoBehaviour
 
     public List<GameObject> Buildings;
     public List<GameObject> Units;
+
+    public List<GameObject> AllControlledObjects
+    {
+        get
+        {
+            return new List<GameObject>().Concat(Units).Concat(Buildings).ToList();
+        }
+    }
 
     private GameObject HQ;
 

@@ -82,9 +82,9 @@ public class SelectionController : MonoBehaviour
                 if (!Input.GetButton("MultiSelect"))
                     DeselectAll();
 
-                foreach (var selectableObject in GameManager.Instance.ControllingPlayer.Units)
+                foreach (var selectableObject in GameManager.Instance.ControllingPlayer.AllControlledObjects)
                 {
-                    if (IsWithinSelectionBounds(selectableObject.transform))
+                    if (selectableObject.TryGetComponent<ISelectable>(out _) && IsWithinSelectionBounds(selectableObject.transform))
                     {
                         SelectUnit(selectableObject.transform, true);
                     }

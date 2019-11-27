@@ -11,29 +11,22 @@ public class PlacementController : MonoBehaviour
     [SerializeField, ReadOnly]
     bool isColliderTrigger;
 
+    private void Start()
+    {
+        InputManager.Instance.Cancel.AddListener(CancelBuild);
+    }
+
     void Update()
     {
         if (GameManager.Instance.CursorState == CursorState.None)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1)) // Building
+            if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                currentObject = Instantiate(BuildingManager.Instance.GetBuilding("Building"), GameManager.Instance.ControllingPlayer.BuildingHolder);
-                GameManager.Instance.ControllingPlayer.Buildings.Add(currentObject);
-                GameManager.Instance.CursorState = CursorState.Building;
+                SpawnBuilding("Building");
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2)) // Unit
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                currentObject = Instantiate(UnitManager.Instance.GetUnit("Swordmen"), GameManager.Instance.ControllingPlayer.UnitHolder);
-                currentObject.GetComponent<Unit>().Owner = GameManager.Instance.ControllingPlayer;
-                GameManager.Instance.ControllingPlayer.Units.Add(currentObject);
-                GameManager.Instance.CursorState = CursorState.Building;
-            }
-
-            if (currentObject == null)
-                GameManager.Instance.CursorState = CursorState.None;
-            else
-            {
-                currentPlacementValidator = currentObject.AddComponent<PlacementValidator>();
+                SpawnUnit("Swordmen");
             }
         }
 
@@ -47,6 +40,31 @@ public class PlacementController : MonoBehaviour
             if (Input.GetMouseButtonDown(0) && currentPlacementValidator.IsValidPosition())
                 PlaceCurrentObject();
         }
+    }
+
+    public void SpawnUnit(string unitName)
+    {
+        currentObject = Instantiate(UnitManager.Instance.GetUnit(unitName), GameManager.Instance.ControllingPlayer.UnitHolder);
+        currentObject.GetComponent<Unit>().Owner = GameManager.Instance.ControllingPlayer;
+        GameManager.Instance.ControllingPlayer.Units.Add(currentObject);
+        GameManager.Instance.CursorState = CursorState.Building;
+        AddValidation();
+    }
+
+    public void SpawnBuilding(string buildingName)
+    {
+        currentObject = Instantiate(BuildingManager.Instance.GetBuilding(buildingName), GameManager.Instance.ControllingPlayer.BuildingHolder);
+        GameManager.Instance.ControllingPlayer.Buildings.Add(currentObject);
+        GameManager.Instance.CursorState = CursorState.Building;
+        AddValidation();
+    }
+
+    void AddValidation()
+    {
+        if (currentObject == null)
+            GameManager.Instance.CursorState = CursorState.None;
+        else
+            currentPlacementValidator = currentObject.AddComponent<PlacementValidator>();
     }
 
     void MoveBuildingToMouse()
@@ -70,6 +88,9 @@ public class PlacementController : MonoBehaviour
 
     void CancelBuild()
     {
+        if (currentObject == null)
+            return;
+
         Destroy(currentObject);
         currentObject = null;
         currentPlacementValidator = null;

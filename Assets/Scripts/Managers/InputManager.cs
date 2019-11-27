@@ -46,6 +46,10 @@ public class InputManager : MonoBehaviour
         {
             CheckOrders();
         }
+        if (gameManager.CursorState == CursorState.Selecting || gameManager.CursorState == CursorState.Building)
+        {
+            CheckCancel();
+        }
     }
 
     void CheckOrders()
@@ -62,5 +66,14 @@ public class InputManager : MonoBehaviour
         {
             OrderStop.Invoke();
         }
+    }
+
+    void CheckCancel()
+    {
+        if (Input.GetButton("Escape") || Input.GetButton("Cancel") || Input.GetButton("Secondary Mouse"))
+        {
+            Cancel.Invoke();
+        }
+
     }
 }
