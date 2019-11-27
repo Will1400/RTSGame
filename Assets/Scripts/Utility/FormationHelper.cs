@@ -13,7 +13,7 @@ public class FormationHelper : MonoBehaviour
     {
         List<Vector3> points = new List<Vector3>();
 
-        int row = 0;
+        int row = -1;
         for (int i = 0; i < pointCount; i++)
         {
             if (i % 5 == 0)
