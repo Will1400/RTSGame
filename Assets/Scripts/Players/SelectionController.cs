@@ -34,6 +34,7 @@ public class SelectionController : MonoBehaviour
         InputManager.Instance.Cancel.AddListener(CancelDrag);
         InputManager.Instance.OrderMove.AddListener(OrderSelectedUnitsToMove);
         InputManager.Instance.OrderStop.AddListener(OrderSelectedUnitsToStop);
+        InputManager.Instance.OrderAttack.AddListener(OrderSelectedUnitsToAttack);
     }
 
     void Update()
@@ -146,11 +147,10 @@ public class SelectionController : MonoBehaviour
         if (selected.Count == 0)
             return;
 
-        Vector3 targetPosition;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Terrain")))
         {
-            targetPosition = hit.point;
+            Vector3 targetPosition = hit.point;
             List<Vector3> points = FormationHelper.GetFormation(targetPosition, selected.Where(x => x.TryGetComponent<Unit>(out _)).Count());
 
             for (int i = 0; i < selected.Count; i++)
@@ -173,6 +173,21 @@ public class SelectionController : MonoBehaviour
         foreach (var item in selected.Where(x => x.TryGetComponent<Unit>(out _)))
         {
             item.GetComponent<Unit>().OrderStop();
+        }
+    }
+
+    void OrderSelectedUnitsToAttack()
+    {
+        if (selected.Count == 0)
+            return;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Terrain")))
+        {
+            foreach (var item in selected.Where(x => x.TryGetComponent<Unit>(out _)))
+            {
+                item.GetComponent<Unit>().MoveIntoAttackRange(hit.point);
+            }
         }
     }
 }

@@ -163,15 +163,18 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
         return target != null && Vector3.Distance(transform.position, target.position) > visionRange;
     }
 
-    public virtual void MoveToPosition(Vector3 pos)
+    public virtual void MoveToPosition(Vector3 position)
     {
-        agent.SetDestination(pos);
+        agent.SetDestination(position);
     }
 
-    public virtual void MoveIntoAttackRange()
+    public virtual void MoveIntoAttackRange(Vector3 position)
     {
-        Vector3 targetPosition = target.position + ((transform.position - target.position).normalized * attackRange);
-        MoveToPosition(targetPosition);
+        if (!IsInAttackRangeOfPosition((position)))
+        {
+            Vector3 targetPosition = position + ((transform.position - position).normalized * attackRange);
+            MoveToPosition(targetPosition);
+        }
     }
 
     /// <summary>
@@ -181,6 +184,11 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
     protected bool CanAttackTarget()
     {
         return target != null && nextAttack < Time.time && Vector3.Distance(transform.position, target.position) <= attackRange;
+    }
+
+    protected bool IsInAttackRangeOfPosition(Vector3 position)
+    {
+        return Vector3.Distance(transform.position, position) <= attackRange;
     }
 
     public virtual void OrderStop()
