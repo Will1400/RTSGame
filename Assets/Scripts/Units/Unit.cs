@@ -155,6 +155,7 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
             agent = _agent;
             agent.speed = speed;
         }
+
         Material = new Material(GetComponent<Renderer>().material);
     }
 
@@ -183,7 +184,7 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
     /// <returns>True if the target can be attacked</returns>
     protected bool CanAttackTarget()
     {
-        return target != null && nextAttack < Time.time && Vector3.Distance(transform.position, target.position) <= attackRange;
+        return target != null && nextAttack < Time.time && IsInAttackRangeOfPosition(target.position);
     }
 
     protected bool IsInAttackRangeOfPosition(Vector3 position)
