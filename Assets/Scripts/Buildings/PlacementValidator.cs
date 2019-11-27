@@ -9,7 +9,6 @@ public class PlacementValidator : MonoBehaviour
     private Rigidbody rigidbody;
     bool isColliderTrigger;
 
-
     private void Start()
     {
         colliders = new List<Collider>();

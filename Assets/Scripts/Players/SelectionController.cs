@@ -28,14 +28,23 @@ public class SelectionController : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        InputManager.Instance.Cancel.AddListener(CancelDrag);
+        InputManager.Instance.OrderMove.AddListener(OrderSelectedUnitsToMove);
+    }
+
     void Update()
     {
-        if (Input.GetButton("Escape") || Input.GetButton("Secondary Mouse"))
-        {
-            isDragging = false;
-            GameManager.Instance.CursorState = CursorState.None;
-        }
 
+        CheckBeginDrag();
+
+        CheckEndDrag();
+    }
+
+
+    void CheckBeginDrag()
+    {
         if (Input.GetButtonDown("Primary Mouse") && GameManager.Instance.CursorState == CursorState.None)
         {
             bool isMultiSelecting = Input.GetButton("MultiSelect");
@@ -61,9 +70,11 @@ public class SelectionController : MonoBehaviour
                     GameManager.Instance.CursorState = CursorState.Selecting;
                 }
             }
-
         }
+    }
 
+    void CheckEndDrag()
+    {
         if (Input.GetButtonUp("Primary Mouse"))
         {
             if (isDragging)
@@ -85,7 +96,13 @@ public class SelectionController : MonoBehaviour
         }
     }
 
-    private void SelectUnit(Transform unit, bool isMultiSelect = false)
+    void CancelDrag()
+    {
+        isDragging = false;
+        GameManager.Instance.CursorState = CursorState.None;
+    }
+
+    void SelectUnit(Transform unit, bool isMultiSelect = false)
     {
         if (!isMultiSelect)
         {
@@ -96,7 +113,7 @@ public class SelectionController : MonoBehaviour
         selected.Add(unit);
     }
 
-    private void DeselectAll()
+    void DeselectAll()
     {
         for (int i = 0; i < selected.Count; i++)
         {
@@ -106,13 +123,13 @@ public class SelectionController : MonoBehaviour
         selected.Clear();
     }
 
-    private void Deselect(Transform selectable)
+    void Deselect(Transform selectable)
     {
         selectable.GetComponent<ISelectable>().Deselect();
         selected.Remove(selectable);
     }
 
-    private bool IsWithinSelectionBounds(Transform transform)
+    bool IsWithinSelectionBounds(Transform transform)
     {
         if (!isDragging)
             return false;
@@ -120,5 +137,26 @@ public class SelectionController : MonoBehaviour
         var camera = Camera.main;
         var viewportBounds = ScreenHelper.GetViewportBounds(camera, startingDragPosition, Input.mousePosition);
         return viewportBounds.Contains(camera.WorldToViewportPoint(transform.position));
+    }
+
+    void OrderSelectedUnitsToMove()
+    {
+        if (selected.Count == 0)
+            return;
+
+        Vector3 targetPosition;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Terrain")))
+        {
+            targetPosition = hit.point;
+            foreach (var item in selected)
+            {
+                if (item.TryGetComponent<Unit>(out Unit unit))
+                {
+                    unit.MoveToPosition(targetPosition);
+                }
+            }
+        }
+
     }
 }
