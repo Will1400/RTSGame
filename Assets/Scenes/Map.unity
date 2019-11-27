@@ -1564,7 +1564,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selected: []
   borderColor: {r: 0, g: 1, b: 0, a: 1}
-  centerColor: {r: 0.5821022, g: 0.5821022, b: 0.9716981, a: 0.20784314}
+  centerColor: {r: 0.80833924, g: 0.80833924, b: 0.990566, a: 0.20784314}
   isDragging: 0
 --- !u!114 &2131423344
 MonoBehaviour:
@@ -1578,6 +1578,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78633cfce6b4f74468714c15754899bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentObject: {fileID: 0}
+  currentPlacementValidator: {fileID: 0}
+  isColliderTrigger: 0
 --- !u!4 &2131423345
 Transform:
   m_ObjectHideFlags: 0

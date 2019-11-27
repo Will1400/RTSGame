@@ -33,10 +33,12 @@ public class SelectionController : MonoBehaviour
         if (Input.GetButton("Escape") || Input.GetButton("Secondary Mouse"))
         {
             isDragging = false;
+            GameManager.Instance.CursorState = CursorState.None;
         }
 
-        if (Input.GetButtonDown("Primary Mouse"))
+        if (Input.GetButtonDown("Primary Mouse") && GameManager.Instance.CursorState == CursorState.None)
         {
+            bool isMultiSelecting = Input.GetButton("MultiSelect");
             startingDragPosition = Input.mousePosition;
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -44,13 +46,13 @@ public class SelectionController : MonoBehaviour
             {
                 if (hit.collider.TryGetComponent<ISelectable>(out ISelectable selectable))
                 {
-                    if (selectable.IsSelected)
+                    if (isMultiSelecting && selectable.IsSelected)
                     {
                         Deselect(hit.transform);
                     }
                     else
                     {
-                        SelectUnit(hit.transform, Input.GetButton("MultiSelect"));
+                        SelectUnit(hit.transform, isMultiSelecting);
                     }
                 }
                 else
@@ -80,9 +82,7 @@ public class SelectionController : MonoBehaviour
                 isDragging = false;
                 GameManager.Instance.CursorState = CursorState.None;
             }
-
         }
-
     }
 
     private void SelectUnit(Transform unit, bool isMultiSelect = false)

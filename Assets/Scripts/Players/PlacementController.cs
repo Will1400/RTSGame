@@ -3,22 +3,25 @@ using System.Collections;
 
 public class PlacementController : MonoBehaviour
 {
+    [SerializeField, ReadOnly]
     private GameObject currentObject;
+    [SerializeField, ReadOnly]
     private PlacementValidator currentPlacementValidator;
 
+    [SerializeField, ReadOnly]
     bool isColliderTrigger;
 
     void Update()
     {
         if (GameManager.Instance.CursorState == CursorState.None)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (Input.GetKeyDown(KeyCode.Alpha1)) // Building
             {
                 currentObject = Instantiate(BuildingManager.Instance.GetBuilding("Building"), GameManager.Instance.ControllingPlayer.BuildingHolder);
                 GameManager.Instance.ControllingPlayer.Buildings.Add(currentObject);
                 GameManager.Instance.CursorState = CursorState.Building;
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            else if (Input.GetKeyDown(KeyCode.Alpha2)) // Unit
             {
                 currentObject = Instantiate(UnitManager.Instance.GetUnit("Swordmen"), GameManager.Instance.ControllingPlayer.UnitHolder);
                 currentObject.GetComponent<Unit>().Owner = GameManager.Instance.ControllingPlayer;
@@ -31,17 +34,12 @@ public class PlacementController : MonoBehaviour
             else
             {
                 currentPlacementValidator = currentObject.AddComponent<PlacementValidator>();
-                currentObject.AddComponent<Rigidbody>().isKinematic = true;
-
-                var rb = currentObject.GetComponent<Collider>();
-                isColliderTrigger = rb.isTrigger;
-                rb.isTrigger = true;
             }
         }
 
         if (GameManager.Instance.CursorState == CursorState.Building)
         {
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetButton("Escape") || Input.GetButton("Secondary Mouse"))
                 CancelBuild();
 
             MoveBuildingToMouse();
@@ -64,20 +62,17 @@ public class PlacementController : MonoBehaviour
     void PlaceCurrentObject()
     {
         Destroy(currentPlacementValidator);
-        Destroy(currentObject.GetComponent<Rigidbody>());
-
-        currentObject.GetComponent<Collider>().isTrigger = false;
-
-        if (!isColliderTrigger)
-            currentObject.GetComponent<Collider>().isTrigger = false;
 
         currentObject = null;
+        currentPlacementValidator = null;
         GameManager.Instance.CursorState = CursorState.None;
     }
 
     void CancelBuild()
     {
         Destroy(currentObject);
+        currentObject = null;
+        currentPlacementValidator = null;
         GameManager.Instance.CursorState = CursorState.None;
     }
 }
