@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -149,11 +150,15 @@ public class SelectionController : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Terrain")))
         {
             targetPosition = hit.point;
-            foreach (var item in selected)
+            List<Vector3> points = FormationHelper.GetFormation(targetPosition, selected.Where(x => x.TryGetComponent<Unit>(out _)).Count());
+
+            for (int i = 0; i < selected.Count; i++)
             {
-                if (item.TryGetComponent<Unit>(out Unit unit))
+                var current = selected[i];
+
+                if (current.TryGetComponent<Unit>(out Unit unit))
                 {
-                    unit.MoveToPosition(targetPosition);
+                    unit.MoveToPosition(points[i]);
                 }
             }
         }
