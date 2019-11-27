@@ -25,6 +25,7 @@ public class InputManager : MonoBehaviour
         Escape = new UnityEvent();
         Cancel = new UnityEvent();
 
+        // Orders
         OrderMove = new UnityEvent();
         OrderAttack = new UnityEvent();
         OrderStop = new UnityEvent();
@@ -34,14 +35,11 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         gameManager = GameManager.Instance;
-
     }
 
     // Update is called once per frame
     void Update()
     {
-
-
         if (gameManager.CursorState == CursorState.None)
         {
             CheckOrders();

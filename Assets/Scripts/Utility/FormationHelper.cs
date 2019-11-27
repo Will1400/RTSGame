@@ -6,9 +6,9 @@ public class FormationHelper : MonoBehaviour
 {
 
     /// <summary>
-    /// 
+    /// Gets a grid formation
     /// </summary>
-    /// <param name="pointCount"></param>
+    /// <param name="pointCount">Amount of points to place in a grid</param>
     public static List<Vector3> GetFormation(Vector3 position, int pointCount)
     {
         List<Vector3> points = new List<Vector3>();
