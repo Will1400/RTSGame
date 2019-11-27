@@ -17,12 +17,9 @@ public class FormationHelper : MonoBehaviour
         for (int i = 0; i < pointCount; i++)
         {
             if (i % 5 == 0)
-            {
                 row++;
-            }
 
-            Vector3 offset = new Vector3(1.5f, 0) * (i % 5);
-            offset += new Vector3(0, 0, row * 2);
+            Vector3 offset = new Vector3(1.5f, 0) * (i % 5) + new Vector3(0, 0, row * 2);
 
             points.Add(position + offset);
         }

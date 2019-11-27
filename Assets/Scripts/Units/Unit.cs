@@ -183,6 +183,12 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
         return target != null && nextAttack < Time.time && Vector3.Distance(transform.position, target.position) <= attackRange;
     }
 
+    public virtual void OrderStop()
+    {
+        target = null;
+        agent.ResetPath();
+    }
+
     /// <summary>
     /// Attacks the current target without any checks
     /// </summary>

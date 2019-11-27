@@ -33,6 +33,7 @@ public class SelectionController : MonoBehaviour
     {
         InputManager.Instance.Cancel.AddListener(CancelDrag);
         InputManager.Instance.OrderMove.AddListener(OrderSelectedUnitsToMove);
+        InputManager.Instance.OrderStop.AddListener(OrderSelectedUnitsToStop);
     }
 
     void Update()
@@ -162,6 +163,16 @@ public class SelectionController : MonoBehaviour
                 }
             }
         }
+    }
 
+    void OrderSelectedUnitsToStop()
+    {
+        if (selected.Count == 0)
+            return;
+
+        foreach (var item in selected.Where(x => x.TryGetComponent<Unit>(out _)))
+        {
+            item.GetComponent<Unit>().OrderStop();
+        }
     }
 }
