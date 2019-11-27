@@ -181,6 +181,7 @@ GameObject:
   - component: {fileID: 100539504}
   - component: {fileID: 100539502}
   - component: {fileID: 100539505}
+  - component: {fileID: 100539501}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -188,6 +189,33 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &100539501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100539500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77ff5fe1f87ba3d45a688515d415540b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Escape:
+    m_PersistentCalls:
+      m_Calls: []
+  Cancel:
+    m_PersistentCalls:
+      m_Calls: []
+  OrderMove:
+    m_PersistentCalls:
+      m_Calls: []
+  OrderAttack:
+    m_PersistentCalls:
+      m_Calls: []
+  OrderStop:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &100539502
 MonoBehaviour:
   m_ObjectHideFlags: 0
