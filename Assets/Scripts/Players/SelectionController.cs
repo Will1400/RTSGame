@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class SelectionController : MonoBehaviour
 {
-    [SerializeField, ReadOnly]
+    //[SerializeField, ReadOnly]
     List<Transform> selected = new List<Transform>();
 
     [SerializeField]
@@ -15,7 +15,7 @@ public class SelectionController : MonoBehaviour
     [SerializeField]
     private Color centerColor = new Color(0.8f, 0.8f, 0.95f, 0.1f);
 
-    [SerializeField, ReadOnly]
+    //[SerializeField, ReadOnly]
     private bool isDragging = false;
     private Vector3 startingDragPosition;
 
@@ -159,7 +159,7 @@ public class SelectionController : MonoBehaviour
 
                 if (current.TryGetComponent<Unit>(out Unit unit))
                 {
-                    unit.MoveToPosition(points[i]);
+                    unit.SendRPCMoveToPosition(points[i]);
                 }
             }
         }

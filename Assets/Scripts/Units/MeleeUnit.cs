@@ -23,7 +23,7 @@ public class MeleeUnit : Unit
             }
             else
             {
-                MoveToPosition(target.position);
+                SendRPCMoveToPosition(target.position);
             }
 
         }

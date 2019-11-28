@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Linq;
 using UnityEngine.AI;
+using BeardedManStudios.Forge.Networking.Generated;
+using BeardedManStudios.Forge.Networking;
 
-public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, ISelectable
+public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISelectable
 {
     #region Fields
     [SerializeField]
@@ -148,6 +150,13 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
         Setup();
     }
 
+    protected override void NetworkStart()
+    {
+        base.NetworkStart();
+
+        networkObject.Health = health;
+    }
+
     protected virtual void Setup()
     {
         if (TryGetComponent(out NavMeshAgent _agent))
@@ -164,17 +173,12 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
         return target != null && Vector3.Distance(transform.position, target.position) > visionRange;
     }
 
-    public virtual void MoveToPosition(Vector3 position)
-    {
-        agent.SetDestination(position);
-    }
-
     public virtual void MoveIntoAttackRange(Vector3 position)
     {
         if (!IsInAttackRangeOfPosition((position)))
         {
             Vector3 targetPosition = position + ((transform.position - position).normalized * attackRange);
-            MoveToPosition(targetPosition);
+            SendRPCMoveToPosition(targetPosition);
         }
     }
 
@@ -221,5 +225,23 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
     {
         GetComponent<MeshRenderer>().material = Material;
         IsSelected = false;
+    }
+
+    public virtual void SendRPCMoveToPosition(Vector3 position)
+    {
+        networkObject.SendRpc(RPC_MOVE_TO_POSITION, Receivers.All, position);
+
+    }
+
+    // RPC
+    public override void MoveToPosition(RpcArgs args)
+    {
+        agent.SetDestination(args.GetNext<Vector3>());
+    }
+
+    public override void OrderStop(RpcArgs args)
+    {
+        target = null;
+        agent.ResetPath();
     }
 }

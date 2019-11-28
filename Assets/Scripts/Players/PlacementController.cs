@@ -1,15 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
+using BeardedManStudios.Forge.Networking.Generated;
+using BeardedManStudios.Forge.Networking;
+using BeardedManStudios.Forge.Networking.Unity;
 
-public class PlacementController : MonoBehaviour
+public class PlacementController : PlacementControllerBehavior
 {
-    [SerializeField, ReadOnly]
+    //[SerializeField, ReadOnly]
     private GameObject currentObject;
-    [SerializeField, ReadOnly]
+    //[SerializeField, ReadOnly]
     private PlacementValidator currentPlacementValidator;
 
-    [SerializeField, ReadOnly]
+    //[SerializeField, ReadOnly]
     bool isColliderTrigger;
+
+    ObjectType objectType;
+    int objectIndex;
 
     private void Start()
     {
@@ -48,6 +54,8 @@ public class PlacementController : MonoBehaviour
         currentObject.GetComponent<Unit>().Owner = GameManager.Instance.ControllingPlayer;
         GameManager.Instance.ControllingPlayer.Units.Add(currentObject);
         GameManager.Instance.CursorState = CursorState.Building;
+        objectType = ObjectType.Unit;
+        objectIndex = UnitManager.Instance.GetIndexOfUnitName(unitName);
         AddValidation();
     }
 
@@ -56,6 +64,8 @@ public class PlacementController : MonoBehaviour
         currentObject = Instantiate(BuildingManager.Instance.GetBuilding(buildingName), GameManager.Instance.ControllingPlayer.BuildingHolder);
         GameManager.Instance.ControllingPlayer.Buildings.Add(currentObject);
         GameManager.Instance.CursorState = CursorState.Building;
+        objectType = ObjectType.Building;
+        objectIndex = BuildingManager.Instance.GetIndexOfBuildingName(buildingName);
         AddValidation();
     }
 
@@ -81,9 +91,12 @@ public class PlacementController : MonoBehaviour
     {
         Destroy(currentPlacementValidator);
 
+        networkObject.SendRpc(RPC_PLACE_OBJECT, Receivers.OthersBuffered, currentObject.transform.position, SerializationHelper.ObjectToByteArray(objectType), objectIndex);
+
         currentObject = null;
         currentPlacementValidator = null;
         GameManager.Instance.CursorState = CursorState.None;
+
     }
 
     void CancelBuild()
@@ -95,5 +108,29 @@ public class PlacementController : MonoBehaviour
         currentObject = null;
         currentPlacementValidator = null;
         GameManager.Instance.CursorState = CursorState.None;
+    }
+
+
+    public override void PlaceObject(RpcArgs args)
+    {
+        Vector3 position = args.GetNext<Vector3>();
+        ObjectType type = SerializationHelper.ByteArrayToObject<ObjectType>(args.GetNext<byte[]>());
+        int objectIndex = args.GetNext<int>();
+
+        GameObject prefab = null;
+
+        switch (type)
+        {
+            case ObjectType.Unit:
+                prefab = UnitManager.Instance.GetUnit(objectIndex);
+                break;
+            case ObjectType.Building:
+                prefab = BuildingManager.Instance.GetBuilding(objectIndex);
+                break;
+            default:
+                break;
+        }
+
+        Instantiate(prefab, position, Quaternion.identity);
     }
 }
