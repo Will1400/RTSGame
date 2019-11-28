@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "ca.andydbc.unity-texture-packer": "file:C:/Users/will1400/Documents/Assets/unity-texture-packer-master",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.burst": "1.1.2",
     "com.unity.collab-proxy": "1.2.16",
