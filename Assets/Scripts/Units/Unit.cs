@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine.AI;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking;
+using UnityEngine.Events;
 
 public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISelectable
 {
@@ -51,6 +52,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     protected NavMeshAgent agent;
 
     protected LineRenderer lineRenderer;
+
     #endregion
 
     private Material Material;
@@ -80,6 +82,12 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     }
 
     public bool IsSelected { get; set; }
+
+
+    public UnityEvent UnitDied;
+
+
+
 
     public virtual void Damage(float amount, DamageType damageType)
     {
@@ -123,7 +131,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
         if (health <= 0)
         {
-            Destroy(gameObject);
+            UnitDied.Invoke();
         }
     }
 
@@ -164,6 +172,8 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
             agent = _agent;
             agent.speed = speed;
         }
+
+        UnitDied = new UnityEvent();
 
         Material = new Material(GetComponent<Renderer>().material);
     }
@@ -257,5 +267,27 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         {
             networkObject.SendRpc(RPC_MOVE_TO_POSITION, Receivers.All, transform.position + Vector3.one * 10);
         }
+
     }
+
+    protected void FixedUpdate()
+    {
+        SyncObject();
+    }
+
+    protected void SyncObject()
+    {
+        if (networkObject.IsOwner)
+        {
+            networkObject.Position = transform.position;
+            networkObject.Rotation = transform.rotation;
+        }
+        else
+        {
+            transform.position = networkObject.Position;
+            transform.rotation = networkObject.Rotation;
+        }
+    }
+
+
 }
