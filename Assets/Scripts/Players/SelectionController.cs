@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class SelectionController : MonoBehaviour
 {
-    //[SerializeField, ReadOnly]
+    [SerializeField]
     List<Transform> selected = new List<Transform>();
 
     [SerializeField]
@@ -15,7 +15,7 @@ public class SelectionController : MonoBehaviour
     [SerializeField]
     private Color centerColor = new Color(0.8f, 0.8f, 0.95f, 0.1f);
 
-    //[SerializeField, ReadOnly]
+    [SerializeField]
     private bool isDragging = false;
     private Vector3 startingDragPosition;
 
@@ -159,7 +159,7 @@ public class SelectionController : MonoBehaviour
 
                 if (current.TryGetComponent<Unit>(out Unit unit))
                 {
-                    unit.SendRPCMoveToPosition(points[i]);
+                    unit.SendRpcMoveToPosition(points[i]);
                 }
             }
         }
@@ -172,7 +172,7 @@ public class SelectionController : MonoBehaviour
 
         foreach (var item in selected.Where(x => x.TryGetComponent<Unit>(out _)))
         {
-            item.GetComponent<Unit>().OrderStop();
+            item.GetComponent<Unit>().SendRpcOrderStop();
         }
     }
 
@@ -187,6 +187,7 @@ public class SelectionController : MonoBehaviour
             foreach (var item in selected.Where(x => x.TryGetComponent<Unit>(out _)))
             {
                 item.GetComponent<Unit>().MoveIntoAttackRange(hit.point);
+                _ = item.GetComponent<Unit>().networkObject;
             }
         }
     }

@@ -168,6 +168,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         Material = new Material(GetComponent<Renderer>().material);
     }
 
+
     protected bool IsTargetOutOfRange()
     {
         return target != null && Vector3.Distance(transform.position, target.position) > visionRange;
@@ -178,7 +179,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         if (!IsInAttackRangeOfPosition((position)))
         {
             Vector3 targetPosition = position + ((transform.position - position).normalized * attackRange);
-            SendRPCMoveToPosition(targetPosition);
+            SendRpcMoveToPosition(targetPosition);
         }
     }
 
@@ -227,10 +228,14 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         IsSelected = false;
     }
 
-    public virtual void SendRPCMoveToPosition(Vector3 position)
+    public virtual void SendRpcMoveToPosition(Vector3 position)
     {
         networkObject.SendRpc(RPC_MOVE_TO_POSITION, Receivers.All, position);
+    }
 
+    public virtual void SendRpcOrderStop()
+    {
+        networkObject.SendRpc(RPC_ORDER_STOP, Receivers.All);
     }
 
     // RPC
@@ -239,9 +244,18 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         agent.SetDestination(args.GetNext<Vector3>());
     }
 
+    // RPC
     public override void OrderStop(RpcArgs args)
     {
         target = null;
         agent.ResetPath();
+    }
+
+    protected virtual void Update()
+    {
+        if (Input.GetKey(KeyCode.W))
+        {
+            networkObject.SendRpc(RPC_MOVE_TO_POSITION, Receivers.All, transform.position + Vector3.one * 10);
+        }
     }
 }

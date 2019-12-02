@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class MeleeUnit : Unit
 {
-    protected virtual void Update()
+    protected override void Update()
     {
+        base.Update();
+
         if (IsTargetOutOfRange())
         {
             target = null;
@@ -23,7 +25,7 @@ public class MeleeUnit : Unit
             }
             else
             {
-                SendRPCMoveToPosition(target.position);
+                SendRpcMoveToPosition(target.position);
             }
 
         }

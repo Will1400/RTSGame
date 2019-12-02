@@ -4,14 +4,13 @@ using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
 
-public class PlacementController : PlacementControllerBehavior
+public class PlacementController : MonoBehaviour
 {
-    //[SerializeField, ReadOnly]
+    [SerializeField]
     private GameObject currentObject;
-    //[SerializeField, ReadOnly]
+    [SerializeField]
     private PlacementValidator currentPlacementValidator;
 
-    //[SerializeField, ReadOnly]
     bool isColliderTrigger;
 
     ObjectType objectType;
@@ -91,12 +90,17 @@ public class PlacementController : PlacementControllerBehavior
     {
         Destroy(currentPlacementValidator);
 
-        networkObject.SendRpc(RPC_PLACE_OBJECT, Receivers.OthersBuffered, currentObject.transform.position, SerializationHelper.ObjectToByteArray(objectType), objectIndex);
+        if (objectType == ObjectType.Unit)
+        {
+            UnitBehavior unit = NetworkManager.Instance.InstantiateUnit(0, currentObject.transform.position);
+            unit.GetComponent<Unit>().Owner = GameManager.Instance.ControllingPlayer;
+            unit.transform.SetParent(GameManager.Instance.ControllingPlayer.UnitHolder);
+        }
 
+        Destroy(currentObject);
         currentObject = null;
         currentPlacementValidator = null;
         GameManager.Instance.CursorState = CursorState.None;
-
     }
 
     void CancelBuild()
@@ -110,27 +114,28 @@ public class PlacementController : PlacementControllerBehavior
         GameManager.Instance.CursorState = CursorState.None;
     }
 
+    //// RPC
+    //public override void PlaceObject(RpcArgs args)
+    //{
+    //    Vector3 position = args.GetNext<Vector3>();
+    //    ObjectType type = SerializationHelper.Deserialize<ObjectType>(args.GetNext<byte[]>());
+    //    int objectIndex = args.GetNext<int>();
 
-    public override void PlaceObject(RpcArgs args)
-    {
-        Vector3 position = args.GetNext<Vector3>();
-        ObjectType type = SerializationHelper.ByteArrayToObject<ObjectType>(args.GetNext<byte[]>());
-        int objectIndex = args.GetNext<int>();
+    //    GameObject prefab = null;
 
-        GameObject prefab = null;
+    //    switch (type)
+    //    {
+    //        case ObjectType.Unit:
+    //            prefab = UnitManager.Instance.GetUnit(objectIndex);
+    //            break;
+    //        case ObjectType.Building:
+    //            prefab = BuildingManager.Instance.GetBuilding(objectIndex);
+    //            break;
+    //        default:
+    //            break;
+    //    }
 
-        switch (type)
-        {
-            case ObjectType.Unit:
-                prefab = UnitManager.Instance.GetUnit(objectIndex);
-                break;
-            case ObjectType.Building:
-                prefab = BuildingManager.Instance.GetBuilding(objectIndex);
-                break;
-            default:
-                break;
-        }
+    //    var unit = Instantiate(prefab, position, Quaternion.identity);
 
-        Instantiate(prefab, position, Quaternion.identity);
-    }
+    //}
 }

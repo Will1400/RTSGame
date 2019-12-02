@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class SerializationHelper : MonoBehaviour
 {
-    public static byte[] ObjectToByteArray(object obj)
+    public static byte[] Serialize(object obj)
     {
         if (obj == null)
             return null;
@@ -22,7 +22,7 @@ public class SerializationHelper : MonoBehaviour
         return ms.ToArray();
     }
 
-    public static T ByteArrayToObject<T>(byte[] byteArray)
+    public static T Deserialize<T>(byte[] byteArray)
     {
         BinaryFormatter bf = new BinaryFormatter();
         MemoryStream ms = new MemoryStream();
