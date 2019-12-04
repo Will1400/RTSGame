@@ -26,6 +26,8 @@ public class PlayerManager : PlayerManagerBehavior
             Instance = this;
         else
             Destroy(gameObject);
+
+        PlayersSetup = new UnityEvent();
     }
 
     public void SetupPlayersFromLobby(List<LobbyPlayer> lobbyPlayers)

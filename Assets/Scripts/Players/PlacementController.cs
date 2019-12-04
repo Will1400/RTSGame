@@ -50,8 +50,6 @@ public class PlacementController : MonoBehaviour
     public void SpawnUnit(string unitName)
     {
         currentObject = Instantiate(UnitManager.Instance.GetUnit(unitName), GameManager.Instance.ControllingPlayer.UnitHolder);
-        currentObject.GetComponent<Unit>().Owner = GameManager.Instance.ControllingPlayer;
-        GameManager.Instance.ControllingPlayer.Units.Add(currentObject);
         GameManager.Instance.CursorState = CursorState.Building;
         objectType = ObjectType.Unit;
         objectIndex = UnitManager.Instance.GetIndexOfUnitName(unitName);
@@ -92,9 +90,11 @@ public class PlacementController : MonoBehaviour
 
         if (objectType == ObjectType.Unit)
         {
-            UnitBehavior unit = NetworkManager.Instance.InstantiateUnit(0, currentObject.transform.position);
-            unit.GetComponent<Unit>().Owner = GameManager.Instance.ControllingPlayer;
+            UnitBehavior unitBehavior = NetworkManager.Instance.InstantiateUnit(0, currentObject.transform.position);
+            Unit unit = unitBehavior.GetComponent<Unit>();
+            unit.Owner = GameManager.Instance.ControllingPlayer;
             unit.transform.SetParent(GameManager.Instance.ControllingPlayer.UnitHolder);
+            GameManager.Instance.ControllingPlayer.Units.Add(unit.gameObject);
         }
 
         Destroy(currentObject);

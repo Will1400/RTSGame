@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BeardedManStudios.Forge.Networking.Unity;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,19 +28,19 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        SpawnPlayers();
+        PlayerManager.Instance.PlayersSetup.AddListener(() =>
+        {
+            StartCoroutine(UpdateLocalPlayer());
+        });
     }
 
-    private void SpawnPlayers()
+    IEnumerator UpdateLocalPlayer()
     {
-        int count = 0;
-        foreach (Team team in TeamManager.Instance.Teams)
+        while (true)
         {
-            foreach (Player player in team.Players)
-            {
-                player.Initialize(Instantiate(BuildingManager.Instance.GetBuilding("HQ"), spawnPoints[count].position, Quaternion.identity , player.transform));
-                count++;
-            }
+            yield return new WaitForSeconds(1);
+            ControllingPlayer = PlayerManager.Instance.Players.Find(x => x.PlayerNetworkId == NetworkManager.Instance.Networker.Me.NetworkId);
         }
     }
+
 }
