@@ -24,19 +24,6 @@ public class PlayerManager : PlayerManagerBehavior
             Destroy(gameObject);
     }
 
-
-    private void Start()
-    {
-        //NetworkManager.Instance.MasterServerNetworker.playerAccepted += (player, sender) =>
-        //{
-        //    NetworkingPlayers.Add(player);
-        //};
-        //NetworkManager.Instance.MasterServerNetworker.playerDisconnected += (player, sender) =>
-        //{
-        //    NetworkingPlayers.Remove(player);
-        //};
-    }
-
     public void SetupPlayersFromLobby(List<LobbyPlayer> lobbyPlayers)
     {
         if (!networkObject.IsServer)
@@ -110,7 +97,7 @@ public class PlayerManager : PlayerManagerBehavior
             Player player = playerObj.AddComponent<Player>();
             player.PlayerName = playerName;
             player.PlayerNetworkId = networkId;
-
+            player.Initialize(BuildingManager.Instance.GetBuilding("HQ"));
             Players.Add(player);
         });
     }

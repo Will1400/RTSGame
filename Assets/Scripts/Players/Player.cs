@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        if (Team == null && transform.parent.TryGetComponent(out Team team))
+        if (Team == null && transform.parent != null &&transform.parent.TryGetComponent(out Team team))
             Team = team;
 
         Buildings = Buildings ?? new List<GameObject>();

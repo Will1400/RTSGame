@@ -23,7 +23,6 @@ public class GameSettings : MonoBehaviour
             if (scene.name.Contains("Map") && NetworkManager.Instance.IsServer)
             {
                 var e = NetworkManager.Instance.InstantiatePlayerManager();
-                _ = e.Initialized;
                 PlayerManager.Instance.SetupPlayersFromLobby(LobbyPlayers);
             }
 
