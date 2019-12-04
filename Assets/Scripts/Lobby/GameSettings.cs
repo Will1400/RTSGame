@@ -18,6 +18,7 @@ public class GameSettings : MonoBehaviour
             Instance = this;
         else
             Destroy(gameObject);
+
         SceneManager.sceneLoaded += (scene, mode) =>
         {
             if (scene.name.Contains("Map") && NetworkManager.Instance.IsServer)

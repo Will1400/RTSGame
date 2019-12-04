@@ -91,38 +91,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     public virtual void Damage(float amount, DamageType damageType)
     {
-        switch (defenseType)
-        {
-            case DefenseType.All:
-                amount -= defense;
-                break;
-            case DefenseType.AllLight:
-                if (damageType.HasFlag(DamageType.LightMelee) || damageType.HasFlag(DamageType.LightRanged))
-                    amount -= defense;
-                break;
-            case DefenseType.AllHeavy:
-                if (damageType.HasFlag(DamageType.HeavyMelee) || damageType.HasFlag(DamageType.HeavyRanged))
-                    amount -= defense;
-                break;
-            case DefenseType.LightMelee:
-                if (damageType.HasFlag(DamageType.LightMelee))
-                    amount -= defense;
-                break;
-            case DefenseType.HeavyMelee:
-                if (damageType.HasFlag(DamageType.HeavyMelee))
-                    amount -= defense;
-                break;
-            case DefenseType.LightRanged:
-                if (damageType.HasFlag(DamageType.LightRanged))
-                    amount -= defense;
-                break;
-            case DefenseType.HeavyRanged:
-                if (damageType.HasFlag(DamageType.HeavyRanged))
-                    amount -= defense;
-                break;
-            default:
-                break;
-        }
+        amount = DamageHelper.CalculateEffectiveDamage(amount, damageType, defense, defenseType);
 
         if (amount < 0)
             amount = 0;
@@ -240,12 +209,12 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     public virtual void SendRpcMoveToPosition(Vector3 position)
     {
-        networkObject.SendRpc(RPC_MOVE_TO_POSITION, Receivers.AllBuffered, position);
+        networkObject.SendRpc(RPC_MOVE_TO_POSITION, Receivers.All, position);
     }
 
     public virtual void SendRpcOrderStop()
     {
-        networkObject.SendRpc(RPC_ORDER_STOP, Receivers.AllBuffered);
+        networkObject.SendRpc(RPC_ORDER_STOP, Receivers.All);
     }
 
     // RPC
@@ -259,15 +228,6 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     {
         target = null;
         agent.ResetPath();
-    }
-
-    protected virtual void Update()
-    {
-        if (Input.GetKey(KeyCode.W))
-        {
-            networkObject.SendRpc(RPC_MOVE_TO_POSITION, Receivers.All, transform.position + Vector3.one * 10);
-        }
-
     }
 
     protected void FixedUpdate()

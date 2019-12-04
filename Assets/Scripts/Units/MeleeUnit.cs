@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class MeleeUnit : Unit
 {
-    protected override void Update()
+    protected  void Update()
     {
-        base.Update();
 
         if (IsTargetOutOfRange())
         {
