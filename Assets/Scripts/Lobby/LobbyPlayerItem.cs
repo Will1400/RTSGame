@@ -1,4 +1,5 @@
-﻿using BeardedManStudios.Forge.Networking.Unity.Lobby;
+﻿using BeardedManStudios.Forge.Networking.Unity;
+using BeardedManStudios.Forge.Networking.Unity.Lobby;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LobbyPlayerItem : MonoBehaviour
@@ -17,6 +19,8 @@ public class LobbyPlayerItem : MonoBehaviour
     public TextMeshProUGUI AvatarID;
     public TMP_InputField PlayerName;
     public TextMeshProUGUI PlayerTeamID;
+    public TMP_Dropdown ColorPicker;
+    public TMP_Dropdown TeamPicker;
 
     public Button[] Buttons;
 
@@ -57,26 +61,20 @@ public class LobbyPlayerItem : MonoBehaviour
         _manager.KickPlayer(this);
     }
 
-    public void RequestChangeTeam()
+    public void RequestChangeTeam(int teamId)
     {
-        int nextID = AssociatedPlayer.TeamID + 1;
-        if (nextID >= TeamColors.Length)
-            nextID = 0;
-
-        _manager.ChangeTeam(this, nextID);
+        Debug.Log($"{AssociatedPlayer.Name} want to change teams to: {teamId + 1}");
+        _manager.ChangeTeam(this, teamId);
     }
 
-    public void RequestChangeAvatarID()
+    public void RequestChangeAvatarID(int avatarId)
     {
-        int nextID = AssociatedPlayer.AvatarID + 1;
-        if (nextID >= AvatarColors.Length)
-            nextID = 0;
-
-        _manager.ChangeAvatarID(this, nextID);
+        _manager.ChangeAvatarID(this, avatarId);
     }
 
     public void RequestChangeName()
     {
+        Debug.Log($"{AssociatedPlayer.Name} want to change name to: {PlayerName.text}");
         _manager.ChangeName(this, PlayerName.text);
     }
 
@@ -84,23 +82,26 @@ public class LobbyPlayerItem : MonoBehaviour
     {
         Color avatarColor = Color.white;
 
-        //Note: This is just an example, you are free to make your own team colors and
-        // change this to however you see fit
         if (TeamColors.Length > id && id >= 0)
             avatarColor = AvatarColors[id];
 
         AvatarID.text = id.ToString();
         AvatarBG.color = avatarColor;
+        ColorPicker.value = id;
     }
 
     public void ChangeName(string name)
     {
+        Debug.Log($"{AssociatedPlayer.Name} changed name to: {name}");
+
         PlayerName.text = name;
     }
 
     public void ChangeTeam(int id)
     {
-        PlayerTeamID.text = string.Format("Team {0}", id);
+        Debug.Log($"{AssociatedPlayer.Name} changed teams to: {id + 1}");
+        TeamPicker.value = id;
+        PlayerTeamID.text = (id + 1).ToString();
     }
 
     public void ToggleInteractables(bool value)
@@ -112,6 +113,18 @@ public class LobbyPlayerItem : MonoBehaviour
         PlayerTeamID.raycastTarget = value;
         PlayerName.interactable = value;
         PlayerName.GetComponent<Image>().enabled = value;
+        if (value)
+        {
+            TeamPicker.onValueChanged.AddListener(RequestChangeTeam);
+            ColorPicker.onValueChanged.AddListener(RequestChangeAvatarID);
+        }
+        else
+        {
+            TeamPicker.onValueChanged.RemoveAllListeners();
+            ColorPicker.onValueChanged.RemoveAllListeners();
+        }
+        TeamPicker.enabled = value;
+        ColorPicker.enabled = value;
     }
 
     public void ToggleObject(bool value)

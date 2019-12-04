@@ -2343,58 +2343,6 @@ MonoBehaviour:
   TeamName: Team 1
   Players:
   - {fileID: 1632863572}
---- !u!1 &1467444154
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1467444156}
-  - component: {fileID: 1467444155}
-  m_Layer: 0
-  m_Name: NetworkManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1467444155
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1467444154}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbe5b082a785e7641bf1a62b930a3f5a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ChatManagerNetworkObject: []
-  CubeForgeGameNetworkObject: []
-  ExampleProximityPlayerNetworkObject: []
-  NetworkCameraNetworkObject: []
-  PlacementControllerNetworkObject: []
-  TestNetworkObject: []
-  UnitNetworkObject:
-  - {fileID: 5514335657491701633, guid: a40f4bcd654c340439259118576ac5e1, type: 3}
-  automaticScenes: 1
---- !u!4 &1467444156
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1467444154}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 349.7314, y: 209.38007, z: -1054.375}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 10
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1590595070
 GameObject:
   m_ObjectHideFlags: 0
@@ -2598,6 +2546,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerName: Player 2
+  PlayerNetworkId: 0
   Team: {fileID: 0}
   BuildingHolder: {fileID: 0}
   UnitHolder: {fileID: 0}
@@ -2926,6 +2875,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerName: Player 1
+  PlayerNetworkId: 0
   Team: {fileID: 0}
   BuildingHolder: {fileID: 0}
   UnitHolder: {fileID: 0}
@@ -3506,8 +3456,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b386b733477efa43ad10edad00b85fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selected: []
   borderColor: {r: 0, g: 1, b: 0, a: 1}
   centerColor: {r: 0.80833924, g: 0.80833924, b: 0.990566, a: 0.20784314}
+  isDragging: 0
 --- !u!114 &2131423344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3520,6 +3472,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78633cfce6b4f74468714c15754899bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentObject: {fileID: 0}
+  currentPlacementValidator: {fileID: 0}
 --- !u!4 &2131423345
 Transform:
   m_ObjectHideFlags: 0

@@ -45,12 +45,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ChatManagerNetworkObject:
   - {fileID: 1000012032569418, guid: b454b1be0b2c3fa4fb48430867af7566, type: 3}
-  CubeForgeGameNetworkObject: []
   ExampleProximityPlayerNetworkObject:
   - {fileID: 1000012738253334, guid: feb25ecf90a8d8b4ab922a455249997b, type: 3}
   NetworkCameraNetworkObject:
   - {fileID: 139536, guid: 661f29f0c0c86fa47b6015bd602d0ac6, type: 3}
   PlacementControllerNetworkObject: []
+  PlayerManagerNetworkObject:
+  - {fileID: 4891376599797580833, guid: 519ca78d1e5a5d7488aefa9f148e4fcd, type: 3}
+  PlayerNetworkObject: []
   TestNetworkObject: []
   UnitNetworkObject:
   - {fileID: 5514335657491701633, guid: a40f4bcd654c340439259118576ac5e1, type: 3}

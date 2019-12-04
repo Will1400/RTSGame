@@ -7,6 +7,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public string PlayerName;
+    public uint PlayerNetworkId;
     public Team Team;
 
     public Transform BuildingHolder;
@@ -27,10 +28,9 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        if (Team == null)
-        {
-            Team = transform.parent.GetComponent<Team>();
-        }
+        if (Team == null && transform.parent.TryGetComponent(out Team team))
+            Team = team;
+
         Buildings = Buildings ?? new List<GameObject>();
         Units = Units ?? new List<GameObject>();
     }

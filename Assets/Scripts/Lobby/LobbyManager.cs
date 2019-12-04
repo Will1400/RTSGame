@@ -8,6 +8,7 @@ using BeardedManStudios.Forge.Networking.Lobby;
 using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.Forge.Networking.Frame;
 using System;
+using System.Linq;
 
 public class LobbyManager : MonoBehaviour, ILobbyMaster
 {
@@ -115,14 +116,14 @@ public class LobbyManager : MonoBehaviour, ILobbyMaster
         LobbyService.Instance.KickPlayer(playerKicked.NetworkId);
     }
 
-    public void ChangeAvatarID(LobbyPlayerItem item, int nextID)
+    public void ChangeAvatarID(LobbyPlayerItem item, int avatarId)
     {
-        LobbyService.Instance.SetAvatar(nextID);
+        LobbyService.Instance.SetAvatar(avatarId);
     }
 
-    public void ChangeTeam(LobbyPlayerItem item, int nextTeam)
+    public void ChangeTeam(LobbyPlayerItem item, int teamId)
     {
-        LobbyService.Instance.SetTeamId(nextTeam);
+        LobbyService.Instance.SetTeamId(teamId);
     }
 
     public void SendPlayersMessage()
@@ -137,7 +138,16 @@ public class LobbyManager : MonoBehaviour, ILobbyMaster
 
     public void StartGame(int sceneID)
     {
+        if (NetworkManager.Instance.IsServer)
+        {
+            GameObject settingObj = new GameObject("GameSettings");
+            settingObj.AddComponent<GameSettings>().LobbyPlayers = _lobbyPlayers.OfType<LobbyPlayer>().ToList();
+            DontDestroyOnLoad(settingObj);
+        }
+
+
 #if UNITY_5_6_OR_NEWER
+
         SceneManager.LoadScene(sceneID);
 #else
             Application.LoadLevel(sceneID);

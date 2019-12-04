@@ -5,7 +5,7 @@ using UnityEngine;
 public class Team : MonoBehaviour
 {
     public string TeamName;
-    public List<Player> Players;
+    public List<Player> Players = new List<Player>();
 
     private Transform TeamHolder;
 
@@ -13,7 +13,6 @@ public class Team : MonoBehaviour
     private void Start()
     {
         TeamHolder = transform;
-        Players = new List<Player>();
         foreach (Transform item in transform)
         {
             if (item.TryGetComponent<Player>(out Player player))
