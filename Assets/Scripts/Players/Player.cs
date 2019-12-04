@@ -48,6 +48,9 @@ public class Player : MonoBehaviour
             UnitHolder = transform.Find("Units").transform;
         else
             UnitHolder = new GameObject("Units").transform;
+
+        BuildingHolder.SetParent(transform);
+        UnitHolder.SetParent(transform);
     }
 
     public static bool IsOnSameTeam(IControlledByPlayer first, IControlledByPlayer second)

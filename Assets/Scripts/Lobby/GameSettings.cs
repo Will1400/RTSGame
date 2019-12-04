@@ -22,17 +22,13 @@ public class GameSettings : MonoBehaviour
         {
             if (scene.name.Contains("Map") && NetworkManager.Instance.IsServer)
             {
-                NetworkManager.Instance.InstantiatePlayerManager();
-                StartCoroutine(SetupPlayers());
+                NetworkManager.Instance.InstantiatePlayerManager().networkStarted += (behavior) =>
+                {
+                    PlayerManager.Instance.SetupPlayersFromLobby(LobbyPlayers);
+                };
             }
 
             LobbyPlayers.ForEach(x => Debug.Log(x.Name));
         };
-    }
-
-    IEnumerator SetupPlayers()
-    {
-        yield return new WaitForSeconds(1);
-        PlayerManager.Instance.SetupPlayersFromLobby(LobbyPlayers);
     }
 }
