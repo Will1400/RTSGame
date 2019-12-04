@@ -240,12 +240,12 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     public virtual void SendRpcMoveToPosition(Vector3 position)
     {
-        networkObject.SendRpc(RPC_MOVE_TO_POSITION, Receivers.All, position);
+        networkObject.SendRpc(RPC_MOVE_TO_POSITION, Receivers.AllBuffered, position);
     }
 
     public virtual void SendRpcOrderStop()
     {
-        networkObject.SendRpc(RPC_ORDER_STOP, Receivers.All);
+        networkObject.SendRpc(RPC_ORDER_STOP, Receivers.AllBuffered);
     }
 
     // RPC

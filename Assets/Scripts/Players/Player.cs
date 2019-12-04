@@ -39,13 +39,13 @@ public class Player : MonoBehaviour
     {
         this.HQ = HQ;
 
-        if (GameObject.Find("Buildings"))
-            BuildingHolder = GameObject.Find("Buildings").transform;
+        if (transform.Find("Buildings") != null)
+            BuildingHolder = transform.Find("Buildings").transform;
         else
             BuildingHolder = new GameObject("Buildings").transform;
 
-        if (GameObject.Find("Units"))
-            UnitHolder = GameObject.Find("Units").transform;
+        if (transform.Find("Units") != null)
+            UnitHolder = transform.Find("Units").transform;
         else
             UnitHolder = new GameObject("Units").transform;
     }

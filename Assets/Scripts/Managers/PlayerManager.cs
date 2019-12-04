@@ -6,6 +6,8 @@ using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.Forge.Networking.Generated;
 using System.Linq;
+using BeardedManStudios.Forge.Logging;
+using UnityEngine.Events;
 
 public class PlayerManager : PlayerManagerBehavior
 {
@@ -14,6 +16,8 @@ public class PlayerManager : PlayerManagerBehavior
     public List<NetworkingPlayer> NetworkingPlayers = new List<NetworkingPlayer>();
     public List<Player> Players = new List<Player>();
     public List<Team> Teams = new List<Team>();
+
+    public UnityEvent PlayersSetup;
 
 
     private void Awake()
@@ -44,7 +48,10 @@ public class PlayerManager : PlayerManagerBehavior
             Debug.Log("Sending rpc to assign player to team. " + item.Name + " Team: " + item.TeamID);
             networkObject.SendRpc(RPC_ASSIGN_PLAYER_TO_TEAM, Receivers.AllBuffered, item.NetworkId, item.TeamID);
         }
+
+        PlayersSetup.Invoke();
     }
+
 
     public override void AssignPlayerToTeam(RpcArgs args)
     {
@@ -92,6 +99,7 @@ public class PlayerManager : PlayerManagerBehavior
             string playerName = args.GetNext<string>();
             uint networkId = args.GetNext<uint>();
             Debug.Log("Creating player: " + playerName);
+            BMSLogger.Instance.Log("Spawning player: " + playerName);
 
             GameObject playerObj = new GameObject(playerName);
             Player player = playerObj.AddComponent<Player>();
