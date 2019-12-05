@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using BeardedManStudios.Forge.Networking.Unity;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -56,7 +57,7 @@ public class SelectionController : MonoBehaviour
 
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                if (hit.collider.TryGetComponent<ISelectable>(out ISelectable selectable))
+                if (hit.collider.TryGetComponent(out ISelectable selectable) && hit.collider.TryGetComponent(out Unit unit) && unit.Owner.PlayerNetworkId == NetworkManager.Instance.Networker.Me.NetworkId)
                 {
                     if (isMultiSelecting && selectable.IsSelected)
                     {
