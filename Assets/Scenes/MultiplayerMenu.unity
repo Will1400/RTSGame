@@ -1558,7 +1558,7 @@ MonoBehaviour:
   ipAddress: {fileID: 1926933003}
   portNumber: {fileID: 845038659}
   DontChangeSceneOnConnect: 0
-  masterServerHost: 10.0.75.1
+  masterServerHost: 10.205.106.21
   masterServerPort: 15940
   natServerHost: 
   natServerPort: 15941
@@ -1572,7 +1572,7 @@ MonoBehaviour:
   - {fileID: 1920631495}
   useMainThreadManagerForRPCs: 1
   useInlineChat: 0
-  getLocalNetworkConnections: 0
+  getLocalNetworkConnections: 1
   useTCP: 0
 --- !u!114 &2008293288
 MonoBehaviour:
