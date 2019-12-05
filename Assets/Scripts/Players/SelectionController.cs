@@ -57,7 +57,7 @@ public class SelectionController : MonoBehaviour
 
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                if (hit.collider.TryGetComponent(out ISelectable selectable) && hit.collider.TryGetComponent(out Unit unit) && unit.Owner.PlayerNetworkId == NetworkManager.Instance.Networker.Me.NetworkId)
+                if (hit.collider.TryGetComponent(out ISelectable selectable) && hit.collider.TryGetComponent(out Unit unit) && unit.networkObject.IsOwner)
                 {
                     if (isMultiSelecting && selectable.IsSelected)
                     {

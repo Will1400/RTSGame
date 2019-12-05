@@ -1355,7 +1355,7 @@ MonoBehaviour:
   ipAddress: {fileID: 1926933003}
   portNumber: {fileID: 845038659}
   DontChangeSceneOnConnect: 0
-  masterServerHost: 
+  masterServerHost: 10.0.75.1
   masterServerPort: 15940
   natServerHost: 
   natServerPort: 15941
