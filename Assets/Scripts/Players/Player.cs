@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     public string PlayerName;
     public uint PlayerNetworkId;
     public Team Team;
+    public int Score;
 
     public Transform BuildingHolder;
     public Transform UnitHolder;

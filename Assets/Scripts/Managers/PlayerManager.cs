@@ -51,7 +51,10 @@ public class PlayerManager : PlayerManagerBehavior
             networkObject.SendRpc(RPC_ASSIGN_PLAYER_TO_TEAM, Receivers.AllBuffered, item.NetworkId, item.TeamID);
         }
 
-        PlayersSetup.Invoke();
+        NetworkManager.Instance.InstantiatePlayerUiManager().networkStarted += (behavior) =>
+        {
+            PlayerUiManager.Instance.SetupPlayerList();
+        };
     }
 
 

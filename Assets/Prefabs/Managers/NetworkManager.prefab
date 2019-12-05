@@ -56,4 +56,6 @@ MonoBehaviour:
   TestNetworkObject: []
   UnitNetworkObject:
   - {fileID: 5514335657491701633, guid: a40f4bcd654c340439259118576ac5e1, type: 3}
+  PlayerUiManagerNetworkObject:
+  - {fileID: 4891376599797580833, guid: a05a2a3d8d0466049bfdd4413f2597ed, type: 3}
   automaticScenes: 1
