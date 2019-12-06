@@ -143,15 +143,14 @@ public class LobbyManager : MonoBehaviour, ILobbyMaster
             GameObject settingObj = new GameObject("GameSettings");
             settingObj.AddComponent<GameSettings>().LobbyPlayers = _lobbyPlayers.OfType<LobbyPlayer>().ToList();
             DontDestroyOnLoad(settingObj);
-        }
-
 
 #if UNITY_5_6_OR_NEWER
 
-        SceneManager.LoadScene(sceneID);
+            SceneManager.LoadScene(sceneID);
 #else
             Application.LoadLevel(sceneID);
 #endif
+        }
     }
     #endregion
 

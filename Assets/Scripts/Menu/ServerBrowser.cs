@@ -5,9 +5,13 @@ using BeardedManStudios.Forge.Networking;
 using static BeardedManStudios.Forge.Networking.MasterServerResponse;
 using BeardedManStudios.SimpleJSON;
 using BeardedManStudios.Forge.Networking.Unity;
+using TMPro;
+using UnityEngine.UI;
 
 public class ServerBrowser : MonoBehaviour
 {
+    public static ServerBrowser Instance;
+
     public string masterServerIp = "10.205.106.21";
     public ushort masterServerPort = 15940;
 
@@ -15,15 +19,29 @@ public class ServerBrowser : MonoBehaviour
     private GameObject serverListingPrefab;
     [SerializeField]
     private Transform serverListingHolder;
+    [SerializeField]
+    private MultiplayerConnectionMenu connectionMenu;
+    [SerializeField]
+    private Button connectButton;
 
     private List<ServerListEntry> cachedServersEntries = new List<ServerListEntry>();
     private List<Server> cachedServers = new List<Server>();
 
+    private ServerListEntry selectedServer;
     private TCPMasterClient client;
+
+    private void Awake()
+    {
+        if (Instance is null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+    }
 
     private void Start()
     {
         MainThreadManager.Create();
+        connectButton.interactable = false;
         Refresh();
     }
 
@@ -111,7 +129,7 @@ public class ServerBrowser : MonoBehaviour
             Debug.Log("Adding server listing");
             var listingObj = Instantiate(serverListingPrefab, serverListingHolder);
             var listing = listingObj.GetComponent<ServerListEntry>();
-            listing.Initialize(server.Name, server.Type, server.Mode, server.PlayerCount, server.MaxPlayers);
+            listing.Initialize(server.Name, server.Type, server.Mode, server.PlayerCount, server.MaxPlayers, server);
             cachedServersEntries.Add(listing);
         });
     }
@@ -119,7 +137,7 @@ public class ServerBrowser : MonoBehaviour
     void ClearCachedServers()
     {
         cachedServers.Clear();
-        cachedServersEntries.ForEach(x => Destroy(x.gameObject)); 
+        cachedServersEntries.ForEach(x => Destroy(x.gameObject));
         cachedServersEntries.Clear();
     }
 
@@ -130,6 +148,32 @@ public class ServerBrowser : MonoBehaviour
             Debug.Log("Disposing client");
             client.Disconnect(true);
             client = null;
+        }
+    }
+
+    public void ConnectToSelectedServer()
+    {
+        if (selectedServer != null)
+        {
+            connectionMenu.ipAddress.text = selectedServer.server.Address;
+            connectionMenu.portNumber.text = selectedServer.server.Port.ToString();
+            connectionMenu.Connect();
+        }
+    }
+
+    public void SelectServer(ServerListEntry serverEntry)
+    {
+        DeselectServer();
+        selectedServer = serverEntry;
+        connectButton.interactable = true;
+    }
+
+    void DeselectServer()
+    {
+        if (selectedServer != null)
+        {
+            selectedServer.Deselect();
+            selectedServer = null;
         }
     }
 }
