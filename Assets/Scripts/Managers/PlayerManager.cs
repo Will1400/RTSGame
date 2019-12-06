@@ -35,6 +35,11 @@ public class PlayerManager : PlayerManagerBehavior
         if (!networkObject.IsServer)
             return;
 
+        networkObject.Networker.playerConnected += (player, sender) =>
+        {
+
+        };
+
         List<int> teamIds = lobbyPlayers.Select(x => x.TeamID).Distinct().ToList();
 
         foreach (var item in teamIds)
@@ -55,6 +60,8 @@ public class PlayerManager : PlayerManagerBehavior
         {
             PlayerUiManager.Instance.SetupPlayerList();
         };
+
+        networkObject.SendRpc(RPC_SETUP_LOCAL_PLAYER, Receivers.AllBuffered);
     }
 
 
@@ -112,6 +119,16 @@ public class PlayerManager : PlayerManagerBehavior
             player.PlayerNetworkId = networkId;
             player.Initialize(BuildingManager.Instance.GetBuilding("HQ"));
             Players.Add(player);
+        });
+    }
+
+    public override void SetupLocalPlayer(RpcArgs args)
+    {
+        MainThreadManager.Run(() =>
+        {
+            Player localPlayer = Players.Find(x => x.PlayerNetworkId == NetworkManager.Instance.Networker.Me.NetworkId);
+            GameManager.Instance.ControllingPlayer = localPlayer;
+            PlayersSetup.Invoke();
         });
     }
 }

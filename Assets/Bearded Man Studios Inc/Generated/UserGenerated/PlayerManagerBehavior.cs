@@ -4,14 +4,15 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"uint\", \"int\"][\"uint\", \"uint\"][\"string\"][\"string\", \"uint\"]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"PlayerId\", \"TeamId\"][\"PlayerId\", \"NetworkId\"][\"TeamName\"][\"PlayerName\", \"NetworkId\"]]")]
+	[GeneratedRPC("{\"types\":[[\"uint\", \"int\"][\"uint\", \"uint\"][\"string\"][\"string\", \"uint\"][]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[\"PlayerId\", \"TeamId\"][\"PlayerId\", \"NetworkId\"][\"TeamName\"][\"PlayerName\", \"NetworkId\"][]]")]
 	public abstract partial class PlayerManagerBehavior : NetworkBehavior
 	{
 		public const byte RPC_ASSIGN_PLAYER_TO_TEAM = 0 + 5;
 		public const byte RPC_ASSIGN_NETWORK_PLAYER_TO_PLAYER = 1 + 5;
 		public const byte RPC_CREATE_TEAM = 2 + 5;
 		public const byte RPC_CREATE_PLAYER = 3 + 5;
+		public const byte RPC_SETUP_LOCAL_PLAYER = 4 + 5;
 		
 		public PlayerManagerNetworkObject networkObject = null;
 
@@ -29,6 +30,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			networkObject.RegisterRpc("AssignNetworkPlayerToPlayer", AssignNetworkPlayerToPlayer, typeof(uint), typeof(uint));
 			networkObject.RegisterRpc("CreateTeam", CreateTeam, typeof(string));
 			networkObject.RegisterRpc("CreatePlayer", CreatePlayer, typeof(string), typeof(uint));
+			networkObject.RegisterRpc("SetupLocalPlayer", SetupLocalPlayer);
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -128,6 +130,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		/// uint NetworkId
 		/// </summary>
 		public abstract void CreatePlayer(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// </summary>
+		public abstract void SetupLocalPlayer(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}

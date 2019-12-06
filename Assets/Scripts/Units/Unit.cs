@@ -83,11 +83,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     public bool IsSelected { get; set; }
 
-
     public UnityEvent UnitDied;
-
-
-
 
     public virtual void Damage(float amount, DamageType damageType)
     {
@@ -146,7 +142,6 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
         Material = new Material(GetComponent<Renderer>().material);
     }
-
 
     protected bool IsTargetOutOfRange()
     {
@@ -237,7 +232,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     protected void SyncObject()
     {
-        if (networkObject.IsOwner)
+        if (networkObject.NetworkReady && networkObject.IsOwner)
         {
             networkObject.Position = transform.position;
             networkObject.Rotation = transform.rotation;
@@ -248,6 +243,4 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
             transform.rotation = networkObject.Rotation;
         }
     }
-
-
 }

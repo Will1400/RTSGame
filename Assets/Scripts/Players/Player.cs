@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        if (Team == null && transform.parent != null &&transform.parent.TryGetComponent(out Team team))
+        if (Team == null && transform.parent != null && transform.parent.TryGetComponent(out Team team))
             Team = team;
 
         Buildings = Buildings ?? new List<GameObject>();
@@ -56,6 +56,11 @@ public class Player : MonoBehaviour
 
     public static bool IsOnSameTeam(IControlledByPlayer first, IControlledByPlayer second)
     {
-        return first.Owner.Team == second.Owner.Team;
+        if (first.Owner != null && first.Owner.Team != null && second.Owner.Team != null)
+        {
+            return first.Owner.Team == second.Owner.Team;
+        }
+
+        return false;
     }
 }

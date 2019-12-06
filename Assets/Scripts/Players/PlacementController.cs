@@ -51,6 +51,7 @@ public class PlacementController : MonoBehaviour
     {
         currentObject = Instantiate(UnitManager.Instance.GetUnit(unitName), GameManager.Instance.ControllingPlayer.UnitHolder);
         GameManager.Instance.CursorState = CursorState.Building;
+        currentObject.GetComponent<Unit>().Owner = GameManager.Instance.ControllingPlayer;
         objectType = ObjectType.Unit;
         objectIndex = UnitManager.Instance.GetIndexOfUnitName(unitName);
         AddValidation();

@@ -28,19 +28,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        PlayerManager.Instance.PlayersSetup.AddListener(() =>
-        {
-            StartCoroutine(UpdateLocalPlayer());
-        });
-    }
-
-    IEnumerator UpdateLocalPlayer()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(1);
-            ControllingPlayer = PlayerManager.Instance.Players.Find(x => x.PlayerNetworkId == NetworkManager.Instance.Networker.Me.NetworkId);
-        }
     }
 
 }

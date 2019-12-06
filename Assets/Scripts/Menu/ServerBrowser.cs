@@ -12,7 +12,7 @@ public class ServerBrowser : MonoBehaviour
 {
     public static ServerBrowser Instance;
 
-    public string masterServerIp = "10.205.106.21";
+    public string masterServerIp = "10.0.75.1";
     public ushort masterServerPort = 15940;
 
     [SerializeField]
