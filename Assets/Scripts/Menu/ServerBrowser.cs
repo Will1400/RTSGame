@@ -4,20 +4,26 @@ using System.Collections.Generic;
 using BeardedManStudios.Forge.Networking;
 using static BeardedManStudios.Forge.Networking.MasterServerResponse;
 using BeardedManStudios.SimpleJSON;
+using BeardedManStudios.Forge.Networking.Unity;
 
 public class ServerBrowser : MonoBehaviour
 {
+    public string masterServerIp = "10.205.106.21";
+    public ushort masterServerPort = 15940;
+
     [SerializeField]
     private GameObject serverListingPrefab;
     [SerializeField]
     private Transform serverListingHolder;
 
-    private List<ServerListEntry> cachedServers = new List<ServerListEntry>();
+    private List<ServerListEntry> cachedServersEntries = new List<ServerListEntry>();
+    private List<Server> cachedServers = new List<Server>();
 
     private TCPMasterClient client;
 
     private void Start()
     {
+        MainThreadManager.Create();
         Refresh();
     }
 
@@ -45,6 +51,7 @@ public class ServerBrowser : MonoBehaviour
 
                 sendData.Add("get", getData);
 
+                Debug.Log("Sending request to master server");
                 client.Send(BeardedManStudios.Forge.Networking.Frame.Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
             }
             catch
@@ -55,6 +62,7 @@ public class ServerBrowser : MonoBehaviour
 
         client.textMessageReceived += (player, frame, sender) =>
         {
+            Debug.Log("Recived message");
             try
             {
                 JSONNode data = JSONNode.Parse(frame.ToString());
@@ -78,7 +86,7 @@ public class ServerBrowser : MonoBehaviour
                             Debug.Log("Max Players: " + server.MaxPlayers);
                             Debug.Log("Protocol: " + server.Protocol);
 
-                            AddServerListing(server);
+                            cachedServers.Add(server);
                         }
                     }
                 }
@@ -87,26 +95,41 @@ public class ServerBrowser : MonoBehaviour
             {
                 if (client != null)
                     DisposeClient();
+
+                cachedServers.ForEach(x => AddServerListing(x));
             }
         };
-    }
 
+        Debug.Log("Connecting to master server");
+        client.Connect(masterServerIp, masterServerPort);
+    }
 
     void AddServerListing(Server server)
     {
-        var listing = Instantiate(serverListingPrefab, serverListingHolder).GetComponent<ServerListEntry>();
-        listing.Initialize(server.Name, server.Type, server.Mode, server.PlayerCount, server.MaxPlayers);
-        cachedServers.Add(listing);
+        MainThreadManager.Run(() =>
+        {
+            Debug.Log("Adding server listing");
+            var listingObj = Instantiate(serverListingPrefab, serverListingHolder);
+            var listing = listingObj.GetComponent<ServerListEntry>();
+            listing.Initialize(server.Name, server.Type, server.Mode, server.PlayerCount, server.MaxPlayers);
+            cachedServersEntries.Add(listing);
+        });
     }
 
     void ClearCachedServers()
     {
         cachedServers.Clear();
+        cachedServersEntries.ForEach(x => Destroy(x.gameObject)); 
+        cachedServersEntries.Clear();
     }
 
     void DisposeClient()
     {
-        client.Disconnect(true);
-        client = null;
+        if (client != null)
+        {
+            Debug.Log("Disposing client");
+            client.Disconnect(true);
+            client = null;
+        }
     }
 }
