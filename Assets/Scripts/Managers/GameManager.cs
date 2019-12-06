@@ -15,8 +15,7 @@ public class GameManager : MonoBehaviour
 
     public Player ControllingPlayer;
 
-    [SerializeField]
-    private List<Transform> spawnPoints;
+    public List<Transform> SpawnPoints;
 
     private void Awake()
     {

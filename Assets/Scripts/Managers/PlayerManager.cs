@@ -117,7 +117,7 @@ public class PlayerManager : PlayerManagerBehavior
             Player player = playerObj.AddComponent<Player>();
             player.PlayerName = playerName;
             player.PlayerNetworkId = networkId;
-            player.Initialize(BuildingManager.Instance.GetBuilding("HQ"));
+            player.Initialize();
             Players.Add(player);
         });
     }

@@ -36,10 +36,8 @@ public class Player : MonoBehaviour
         Units = Units ?? new List<GameObject>();
     }
 
-    public void Initialize(GameObject HQ)
+    public void Initialize()
     {
-        this.HQ = HQ;
-
         if (transform.Find("Buildings") != null)
             BuildingHolder = transform.Find("Buildings").transform;
         else
