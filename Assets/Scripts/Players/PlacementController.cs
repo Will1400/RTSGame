@@ -114,5 +114,4 @@ public class PlacementController : MonoBehaviour
         currentPlacementValidator = null;
         GameManager.Instance.CursorState = CursorState.None;
     }
-
 }

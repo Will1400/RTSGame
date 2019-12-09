@@ -5,6 +5,7 @@ using UnityEngine.AI;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking;
 using UnityEngine.Events;
+using BeardedManStudios.Forge.Networking.Unity;
 
 public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISelectable
 {
@@ -85,8 +86,6 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     public bool IsSelected { get; set; }
 
-    public UnityEvent UnitDied;
-
     public virtual void Damage(float amount, DamageType damageType)
     {
         amount = DamageHelper.CalculateEffectiveDamage(amount, damageType, defense, defenseType);
@@ -98,8 +97,29 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
         if (health <= 0)
         {
-            UnitDied.Invoke();
+            if (networkObject.IsOwner)
+                networkObject.SendRpc(RPC_DIE, Receivers.AllBuffered);
         }
+    }
+
+    protected override void NetworkStart()
+    {
+        base.NetworkStart();
+        Setup();
+
+        networkObject.Health = health;
+        initialized = true;
+    }
+
+    protected virtual void Setup()
+    {
+        if (TryGetComponent(out NavMeshAgent _agent))
+        {
+            agent = _agent;
+            agent.speed = speed;
+        }
+
+        Material = new Material(GetComponent<Renderer>().material);
     }
 
     protected void GetNearbyTarget()
@@ -118,33 +138,6 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
                 this.target = target.transform;
             }
         }
-    }
-
-    protected virtual void Start()
-    {
-        Setup();
-    }
-
-    protected override void NetworkStart()
-    {
-        base.NetworkStart();
-        
-        networkObject.Health = health;
-
-        initialized = true;
-    }
-
-    protected virtual void Setup()
-    {
-        if (TryGetComponent(out NavMeshAgent _agent))
-        {
-            agent = _agent;
-            agent.speed = speed;
-        }
-
-        UnitDied = new UnityEvent();
-
-        Material = new Material(GetComponent<Renderer>().material);
     }
 
     protected bool IsTargetOutOfRange()
@@ -241,13 +234,22 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         }
     }
 
-    // RPC
     public override void MoveToPosition(RpcArgs args)
     {
         agent.SetDestination(args.GetNext<Vector3>());
     }
 
-    // RPC
+    public override void Die(RpcArgs args)
+    {
+        if (networkObject.IsOwner)
+        {
+            SelectionController.Instance.selected.Remove(transform);
+            GameManager.Instance.ControllingPlayer.Units.Remove(gameObject);
+        }
+
+        Destroy(gameObject);
+    }
+
     public override void OrderStop(RpcArgs args)
     {
         target = null;

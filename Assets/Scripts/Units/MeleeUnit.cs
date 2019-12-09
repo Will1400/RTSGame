@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MeleeUnit : Unit
 {
-    protected  void Update()
+    protected void Update()
     {
 
         if (IsTargetOutOfRange())

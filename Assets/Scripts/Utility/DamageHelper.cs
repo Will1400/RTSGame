@@ -8,9 +8,9 @@ public class DamageHelper
 {
     public static float CalculateEffectiveDamage(float damage, DamageType damageType, float defense, DefenseType defenseType)
     {
-        float amount = 0;
+        float amount = damage;
         if (damageType == DamageType.Direct)
-            amount -= damage;
+            return amount;
 
         switch (defenseType)
         {

@@ -8,8 +8,10 @@ using UnityEngine.UI;
 
 public class SelectionController : MonoBehaviour
 {
+    public static SelectionController Instance;
+
     [SerializeField]
-    List<Transform> selected = new List<Transform>();
+    public List<Transform> selected = new List<Transform>();
 
     [SerializeField]
     private Color borderColor = Color.green;
@@ -28,6 +30,14 @@ public class SelectionController : MonoBehaviour
             ScreenHelper.DrawScreenRect(rect, centerColor);
             ScreenHelper.DrawScreenRectBorder(rect, 1, borderColor);
         }
+    }
+
+    private void Awake()
+    {
+        if (Instance is null)
+            Instance = this;
+        else
+            Destroy(gameObject);
     }
 
     private void Start()
@@ -129,7 +139,9 @@ public class SelectionController : MonoBehaviour
 
     void Deselect(Transform selectable)
     {
-        selectable.GetComponent<ISelectable>().Deselect();
+        if (selectable != null)
+            selectable.GetComponent<ISelectable>().Deselect();
+
         selected.Remove(selectable);
     }
 
@@ -152,7 +164,7 @@ public class SelectionController : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Terrain")))
         {
             Vector3 targetPosition = hit.point;
-            List<Vector3> points = FormationHelper.GetFormation(targetPosition, selected.Where(x => x.TryGetComponent<Unit>(out _)).Count());
+            List<Vector3> points = FormationHelper.GetFormation(targetPosition, selected.Where(x => x != null && x.TryGetComponent<Unit>(out _)).Count());
 
             for (int i = 0; i < selected.Count; i++)
             {
@@ -188,7 +200,6 @@ public class SelectionController : MonoBehaviour
             foreach (var item in selected.Where(x => x.TryGetComponent<Unit>(out _)))
             {
                 item.GetComponent<Unit>().MoveIntoAttackRange(hit.point);
-                _ = item.GetComponent<Unit>().networkObject;
             }
         }
     }

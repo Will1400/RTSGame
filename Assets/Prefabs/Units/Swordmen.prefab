@@ -207,11 +207,14 @@ MonoBehaviour:
   damage: 30
   damageType: 1
   visionRange: 10
-  attackRange: 1
+  attackRange: 2
   speed: 2
   attackRate: 1
   defense: 10
   defenseType: 3
+  UnitDied:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!195 &2445034880985349712
 NavMeshAgent:
   m_ObjectHideFlags: 0
