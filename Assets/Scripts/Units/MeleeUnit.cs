@@ -16,7 +16,6 @@ public class MeleeUnit : Unit
         {
             if (target != null)
             {
-
                 if (CanAttackTarget())
                 {
                     AttackTarget();
