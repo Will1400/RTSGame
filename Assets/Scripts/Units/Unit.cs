@@ -170,7 +170,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         {
             Vector3 targetPosition = position + ((transform.position - position).normalized * attackRange);
             UnitState = UnitState.MoveAttacking;
-            SendRpcMoveToPosition(targetPosition);
+            SendRpcMoveToPosition(targetPosition, true);
         }
     }
 
@@ -219,9 +219,9 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         IsSelected = false;
     }
 
-    public virtual void SendRpcMoveToPosition(Vector3 position)
+    public virtual void SendRpcMoveToPosition(Vector3 position, bool keepState = false)
     {
-        if (UnitState != UnitState.MoveAttacking && UnitState != UnitState.Patrolling)
+        if (!keepState)
         {
             UnitState = UnitState.Walking;
         }
@@ -238,6 +238,9 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     {
         if (!initialized)
             return;
+
+        if (!agent.hasPath)
+            UnitState = UnitState.Idle;
 
         SyncObject();
     }

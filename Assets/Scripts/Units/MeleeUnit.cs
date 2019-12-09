@@ -6,32 +6,33 @@ public class MeleeUnit : Unit
 {
     protected void Update()
     {
-
-        if (IsTargetOutOfRange())
+        if (target != null && IsTargetOutOfRange())
         {
             target = null;
             if (UnitState != UnitState.Walking)
                 agent.ResetPath();
         }
-
-        if (target != null)
+        if (UnitState != UnitState.Walking)
         {
-            if (CanAttackTarget() && UnitState != UnitState.Walking)
+            if (target != null)
             {
-                AttackTarget();
 
-                if (agent.hasPath)
-                    agent.ResetPath();
+                if (CanAttackTarget())
+                {
+                    AttackTarget();
+
+                    if (agent.hasPath)
+                        agent.ResetPath();
+                }
+                else
+                {
+                    MoveIntoAttackRange(target.position);
+                }
             }
             else
             {
-                MoveIntoAttackRange(target.position);
+                GetNearbyTarget();
             }
-
-        }
-        else if (UnitState != UnitState.Walking)
-        {
-            GetNearbyTarget();
         }
     }
 }
