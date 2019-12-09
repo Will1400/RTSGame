@@ -2,7 +2,7 @@
 {
     Idle,
     Walking,
-    Attacking,
+    MoveAttacking,
     Patrolling,
     Defending
 }

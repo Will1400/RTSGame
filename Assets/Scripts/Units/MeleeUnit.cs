@@ -10,12 +10,13 @@ public class MeleeUnit : Unit
         if (IsTargetOutOfRange())
         {
             target = null;
-            agent.ResetPath();
+            if (UnitState != UnitState.Walking)
+                agent.ResetPath();
         }
 
         if (target != null)
         {
-            if (CanAttackTarget())
+            if (CanAttackTarget() && UnitState != UnitState.Walking)
             {
                 AttackTarget();
 
@@ -28,7 +29,7 @@ public class MeleeUnit : Unit
             }
 
         }
-        else
+        else if (UnitState != UnitState.Walking)
         {
             GetNearbyTarget();
         }

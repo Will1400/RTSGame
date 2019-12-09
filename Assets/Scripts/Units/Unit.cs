@@ -56,10 +56,11 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     protected bool initialized;
 
-    #endregion
-
     private Material Material;
 
+    #endregion
+
+    #region Properties
     public Player Owner
     {
         get { return owner; }
@@ -85,6 +86,20 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     }
 
     public bool IsSelected { get; set; }
+
+    public UnitState UnitState
+    {
+        get
+        {
+            return (UnitState)networkObject.UnitState;
+        }
+        set
+        {
+            networkObject.UnitState = (byte)value;
+        }
+    }
+
+    #endregion
 
     public virtual void Damage(float amount, DamageType damageType)
     {
@@ -154,6 +169,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         if (!IsInAttackRangeOfPosition(position))
         {
             Vector3 targetPosition = position + ((transform.position - position).normalized * attackRange);
+            UnitState = UnitState.MoveAttacking;
             SendRpcMoveToPosition(targetPosition);
         }
     }
@@ -205,11 +221,17 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     public virtual void SendRpcMoveToPosition(Vector3 position)
     {
+        if (UnitState != UnitState.MoveAttacking && UnitState != UnitState.Patrolling)
+        {
+            UnitState = UnitState.Walking;
+        }
+
         networkObject.SendRpc(RPC_MOVE_TO_POSITION, Receivers.All, position);
     }
 
     public virtual void SendRpcOrderStop()
     {
+        UnitState = UnitState.Idle;
         networkObject.SendRpc(RPC_ORDER_STOP, Receivers.All);
     }
     protected void FixedUpdate()
@@ -246,7 +268,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
             SelectionController.Instance.selected.Remove(transform);
             PlayerUiManager.Instance.UpdateLocalPlayerInfo();
         }
-        PlayerManager.Instance.GetPlayer(networkObject.MyPlayerId).Units.Remove(gameObject);
+        PlayerManager.Instance.GetPlayer(owner.PlayerNetworkId).Units.Remove(gameObject);
 
         Destroy(gameObject);
     }
