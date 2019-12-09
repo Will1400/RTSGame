@@ -24,7 +24,7 @@ public class MeleeUnit : Unit
             }
             else
             {
-                SendRpcMoveToPosition(target.position);
+                MoveIntoAttackRange(target.position);
             }
 
         }

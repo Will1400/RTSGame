@@ -152,9 +152,13 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         return target != null && Vector3.Distance(transform.position, target.position) > visionRange;
     }
 
+    /// <summary>
+    /// Moves into attacking range of a specific position
+    /// </summary>
+    /// <param name="position">Position to move within attack range of</param>
     public virtual void MoveIntoAttackRange(Vector3 position)
     {
-        if (!IsInAttackRangeOfPosition((position)))
+        if (!IsInAttackRangeOfPosition(position))
         {
             Vector3 targetPosition = position + ((transform.position - position).normalized * attackRange);
             SendRpcMoveToPosition(targetPosition);
