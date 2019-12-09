@@ -30,6 +30,8 @@ public class ServerBrowser : MonoBehaviour
     private ServerListEntry selectedServer;
     private TCPMasterClient client;
 
+    private float serverClickedTime;
+
     private void Awake()
     {
         if (Instance is null)
@@ -163,9 +165,17 @@ public class ServerBrowser : MonoBehaviour
 
     public void SelectServer(ServerListEntry serverEntry)
     {
-        DeselectServer();
-        selectedServer = serverEntry;
-        connectButton.interactable = true;
+        if (selectedServer == serverEntry && serverClickedTime - Time.time <= 0 && serverClickedTime - Time.time >= -1)
+        {
+            ConnectToSelectedServer();
+        }
+        else
+        {
+            DeselectServer();
+            selectedServer = serverEntry;
+            serverClickedTime = Time.time;
+            connectButton.interactable = true;
+        }
     }
 
     void DeselectServer()
