@@ -155,7 +155,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -4.737, y: -89.4}
-  m_SizeDelta: {x: 283.58, y: 1.68}
+  m_SizeDelta: {x: 283.58, y: 2.42}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &69208175
 MonoBehaviour:
@@ -346,9 +346,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CursorState: 0
   ControllingPlayer: {fileID: 0}
-  spawnPoints:
-  - {fileID: 346971775}
-  - {fileID: 257748009}
+  SpawnPoints: []
 --- !u!1 &112616156
 GameObject:
   m_ObjectHideFlags: 0
@@ -913,8 +911,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -4.737, y: -61}
-  m_SizeDelta: {x: 283.58, y: 0.65}
+  m_AnchoredPosition: {x: -4.737, y: -58.955}
+  m_SizeDelta: {x: 283.58, y: 2.6952}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &617816273
 MonoBehaviour:
@@ -1216,8 +1214,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -4.737, y: -32.1}
-  m_SizeDelta: {x: 283.58, y: 0.65}
+  m_AnchoredPosition: {x: -4.737, y: -31.14}
+  m_SizeDelta: {x: 283.58, y: 1.61}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &704537426
 MonoBehaviour:

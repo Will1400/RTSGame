@@ -131,6 +131,7 @@ public class PlayerManager : PlayerManagerBehavior
         {
             Player localPlayer = Players.Find(x => x.PlayerNetworkId == NetworkManager.Instance.Networker.Me.NetworkId);
             GameManager.Instance.ControllingPlayer = localPlayer;
+            PlayerUiManager.Instance.UpdateLocalPlayerInfo();
             PlayersSetup.Invoke();
         });
     }

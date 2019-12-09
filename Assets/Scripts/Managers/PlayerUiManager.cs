@@ -5,6 +5,7 @@ using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 
 public class PlayerUiManager : PlayerUiManagerBehavior
 {
@@ -14,6 +15,7 @@ public class PlayerUiManager : PlayerUiManagerBehavior
     private GameObject playerListPrefab;
     private Canvas ui;
     private Transform playerListHolder;
+    private Transform playerInfo;
 
     private void Awake()
     {
@@ -24,11 +26,18 @@ public class PlayerUiManager : PlayerUiManagerBehavior
 
         ui = GameObject.Find("UI").GetComponent<Canvas>();
         playerListHolder = ui.transform.Find("Player List/Viewport/Content");
+        playerInfo = ui.transform.Find("Player Info Panel/");
     }
 
     public void SetupPlayerList()
     {
         networkObject.SendRpc(RPC_UPDATE_PLAYER_LIST, true, Receivers.AllBuffered);
+    }
+
+    public void UpdateLocalPlayerInfo()
+    {
+        playerInfo.Find("Player Name").GetComponent<TextMeshProUGUI>().text = GameManager.Instance.ControllingPlayer.PlayerName;
+        playerInfo.Find("Unit Count").GetComponent<TextMeshProUGUI>().text = "Units: " + GameManager.Instance.ControllingPlayer.Units.Count.ToString();
     }
 
     public override void UpdatePlayerList(RpcArgs args)

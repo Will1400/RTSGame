@@ -244,8 +244,9 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         if (networkObject.IsOwner)
         {
             SelectionController.Instance.selected.Remove(transform);
-            GameManager.Instance.ControllingPlayer.Units.Remove(gameObject);
+            PlayerUiManager.Instance.UpdateLocalPlayerInfo();
         }
+        PlayerManager.Instance.GetPlayer(networkObject.MyPlayerId).Units.Remove(gameObject);
 
         Destroy(gameObject);
     }

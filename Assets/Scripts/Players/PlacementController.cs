@@ -95,6 +95,7 @@ public class PlacementController : MonoBehaviour
             {
                 UnitBehavior bh = behavior as UnitBehavior;
                 bh.networkObject.SendRpc(2 + 5, Receivers.AllBuffered, GameManager.Instance.ControllingPlayer.PlayerNetworkId);
+                PlayerUiManager.Instance.UpdateLocalPlayerInfo();
             };
         }
 
