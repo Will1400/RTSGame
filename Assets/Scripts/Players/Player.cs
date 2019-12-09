@@ -54,11 +54,11 @@ public class Player : MonoBehaviour
 
     public static bool IsOnSameTeam(IControlledByPlayer first, IControlledByPlayer second)
     {
-        if (first.Owner != null && first.Owner.Team != null && second.Owner.Team != null)
+        if (first.Owner != null && first.Owner.Team != null && second.Owner != null && second.Owner.Team != null)
         {
             return first.Owner.Team == second.Owner.Team;
         }
 
-        return false;
+        return true;
     }
 }

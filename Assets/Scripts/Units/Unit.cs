@@ -53,6 +53,8 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     protected LineRenderer lineRenderer;
 
+    protected bool initialized;
+
     #endregion
 
     private Material Material;
@@ -126,8 +128,10 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     protected override void NetworkStart()
     {
         base.NetworkStart();
-
+        
         networkObject.Health = health;
+
+        initialized = true;
     }
 
     protected virtual void Setup()
@@ -211,6 +215,27 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     {
         networkObject.SendRpc(RPC_ORDER_STOP, Receivers.All);
     }
+    protected void FixedUpdate()
+    {
+        if (!initialized)
+            return;
+
+        SyncObject();
+    }
+
+    protected void SyncObject()
+    {
+        if (networkObject.IsOwner)
+        {
+            networkObject.Position = transform.position;
+            networkObject.Rotation = transform.rotation;
+        }
+        else
+        {
+            transform.position = networkObject.Position;
+            transform.rotation = networkObject.Rotation;
+        }
+    }
 
     // RPC
     public override void MoveToPosition(RpcArgs args)
@@ -225,22 +250,11 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         agent.ResetPath();
     }
 
-    protected void FixedUpdate()
+    public override void AssignToPlayer(RpcArgs args)
     {
-        SyncObject();
-    }
-
-    protected void SyncObject()
-    {
-        if (networkObject.NetworkReady && networkObject.IsOwner)
-        {
-            networkObject.Position = transform.position;
-            networkObject.Rotation = transform.rotation;
-        }
-        else
-        {
-            transform.position = networkObject.Position;
-            transform.rotation = networkObject.Rotation;
-        }
+        Player player = PlayerManager.Instance.GetPlayer(args.GetNext<uint>());
+        owner = player;
+        player.Units.Add(gameObject);
+        transform.SetParent(player.UnitHolder);
     }
 }

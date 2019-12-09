@@ -1167,7 +1167,7 @@ MonoBehaviour:
   - {fileID: 1920631495}
   useMainThreadManagerForRPCs: 1
   useInlineChat: 0
-  getLocalNetworkConnections: 1
+  getLocalNetworkConnections: 0
   useTCP: 0
 --- !u!4 &509833035
 Transform:

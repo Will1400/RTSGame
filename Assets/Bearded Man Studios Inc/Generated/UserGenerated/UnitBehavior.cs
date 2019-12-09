@@ -4,12 +4,13 @@ using UnityEngine;
 
 namespace BeardedManStudios.Forge.Networking.Generated
 {
-	[GeneratedRPC("{\"types\":[[\"Vector3\"][]]")]
-	[GeneratedRPCVariableNames("{\"types\":[[\"position\"][]]")]
+	[GeneratedRPC("{\"types\":[[\"Vector3\"][][\"uint\"]]")]
+	[GeneratedRPCVariableNames("{\"types\":[[\"position\"][][\"networkId\"]]")]
 	public abstract partial class UnitBehavior : NetworkBehavior
 	{
 		public const byte RPC_MOVE_TO_POSITION = 0 + 5;
 		public const byte RPC_ORDER_STOP = 1 + 5;
+		public const byte RPC_ASSIGN_TO_PLAYER = 2 + 5;
 		
 		public UnitNetworkObject networkObject = null;
 
@@ -25,6 +26,7 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			base.SetupHelperRpcs(networkObject);
 			networkObject.RegisterRpc("MoveToPosition", MoveToPosition, typeof(Vector3));
 			networkObject.RegisterRpc("OrderStop", OrderStop);
+			networkObject.RegisterRpc("AssignToPlayer", AssignToPlayer, typeof(uint));
 
 			networkObject.onDestroy += DestroyGameObject;
 
@@ -110,6 +112,10 @@ namespace BeardedManStudios.Forge.Networking.Generated
 		/// Arguments:
 		/// </summary>
 		public abstract void OrderStop(RpcArgs args);
+		/// <summary>
+		/// Arguments:
+		/// </summary>
+		public abstract void AssignToPlayer(RpcArgs args);
 
 		// DO NOT TOUCH, THIS GETS GENERATED PLEASE EXTEND THIS CLASS IF YOU WISH TO HAVE CUSTOM CODE ADDITIONS
 	}

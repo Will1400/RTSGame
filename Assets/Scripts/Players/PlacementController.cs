@@ -91,11 +91,11 @@ public class PlacementController : MonoBehaviour
 
         if (objectType == ObjectType.Unit)
         {
-            UnitBehavior unitBehavior = NetworkManager.Instance.InstantiateUnit(0, currentObject.transform.position);
-            Unit unit = unitBehavior.GetComponent<Unit>();
-            unit.Owner = GameManager.Instance.ControllingPlayer;
-            unit.transform.SetParent(GameManager.Instance.ControllingPlayer.UnitHolder);
-            GameManager.Instance.ControllingPlayer.Units.Add(unit.gameObject);
+           NetworkManager.Instance.InstantiateUnit(0, currentObject.transform.position).networkStarted += (behavior) =>
+            {
+                UnitBehavior bh = behavior as UnitBehavior;
+                bh.networkObject.SendRpc(2 + 5, Receivers.AllBuffered, GameManager.Instance.ControllingPlayer.PlayerNetworkId);
+            };
         }
 
         Destroy(currentObject);
@@ -115,28 +115,4 @@ public class PlacementController : MonoBehaviour
         GameManager.Instance.CursorState = CursorState.None;
     }
 
-    //// RPC
-    //public override void PlaceObject(RpcArgs args)
-    //{
-    //    Vector3 position = args.GetNext<Vector3>();
-    //    ObjectType type = SerializationHelper.Deserialize<ObjectType>(args.GetNext<byte[]>());
-    //    int objectIndex = args.GetNext<int>();
-
-    //    GameObject prefab = null;
-
-    //    switch (type)
-    //    {
-    //        case ObjectType.Unit:
-    //            prefab = UnitManager.Instance.GetUnit(objectIndex);
-    //            break;
-    //        case ObjectType.Building:
-    //            prefab = BuildingManager.Instance.GetBuilding(objectIndex);
-    //            break;
-    //        default:
-    //            break;
-    //    }
-
-    //    var unit = Instantiate(prefab, position, Quaternion.identity);
-
-    //}
 }
