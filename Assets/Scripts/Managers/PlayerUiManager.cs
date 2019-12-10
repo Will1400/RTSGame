@@ -6,6 +6,7 @@ using BeardedManStudios.Forge.Networking.Unity;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerUiManager : PlayerUiManagerBehavior
 {
@@ -34,9 +35,15 @@ public class PlayerUiManager : PlayerUiManagerBehavior
         networkObject.SendRpc(RPC_UPDATE_PLAYER_LIST, true, Receivers.AllBuffered);
     }
 
-    public void UpdateLocalPlayerInfo()
+    public void SetupLocalPlayerInfo()
     {
         playerInfo.Find("Player Name").GetComponent<TextMeshProUGUI>().text = GameManager.Instance.ControllingPlayer.PlayerName;
+        playerInfo.Find("Avatar Image").GetComponent<Image>().color = GameManager.Instance.ControllingPlayer.Color;
+        UpdateLocalPlayerInfo();
+    }
+
+    public void UpdateLocalPlayerInfo()
+    {
         playerInfo.Find("Unit Count").GetComponent<TextMeshProUGUI>().text = "Units: " + GameManager.Instance.ControllingPlayer.Units.Count.ToString();
     }
 
@@ -52,7 +59,7 @@ public class PlayerUiManager : PlayerUiManagerBehavior
                 Player player = players[i];
                 var obj = Instantiate(playerListPrefab, playerListHolder);
                 obj.transform.SetParent(playerListHolder);
-                obj.GetComponent<PlayerListEntry>().Initialize(player.PlayerName, player.Team.TeamName, Color.blue);
+                obj.GetComponent<PlayerListEntry>().Initialize(player.PlayerName, player.Team.TeamName, player.Color);
             }
         });
     }

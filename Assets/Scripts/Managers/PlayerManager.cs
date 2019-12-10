@@ -8,6 +8,7 @@ using BeardedManStudios.Forge.Networking.Generated;
 using System.Linq;
 using BeardedManStudios.Forge.Logging;
 using UnityEngine.Events;
+using System;
 
 public class PlayerManager : PlayerManagerBehavior
 {
@@ -53,8 +54,9 @@ public class PlayerManager : PlayerManagerBehavior
 
         foreach (var item in lobbyPlayers)
         {
+
             Debug.Log("Sending rpc to create player: " + item.Name);
-            networkObject.SendRpc(RPC_CREATE_PLAYER, Receivers.AllBuffered, item.Name, item.NetworkId);
+            networkObject.SendRpc(RPC_CREATE_PLAYER, Receivers.AllBuffered, item.Name, item.NetworkId, ColorHelper.GetColor(item.AvatarID));
             Debug.Log("Sending rpc to assign player to team. " + item.Name + " Team: " + item.TeamID);
             networkObject.SendRpc(RPC_ASSIGN_PLAYER_TO_TEAM, Receivers.AllBuffered, item.NetworkId, item.TeamID);
         }
@@ -66,7 +68,6 @@ public class PlayerManager : PlayerManagerBehavior
 
         networkObject.SendRpc(RPC_SETUP_LOCAL_PLAYER, Receivers.AllBuffered);
     }
-
 
     public override void AssignPlayerToTeam(RpcArgs args)
     {
@@ -113,6 +114,7 @@ public class PlayerManager : PlayerManagerBehavior
             Debug.Log("Recived rpc");
             string playerName = args.GetNext<string>();
             uint networkId = args.GetNext<uint>();
+            Color color = args.GetNext<Color>();
             Debug.Log("Creating player: " + playerName);
             BMSLogger.Instance.Log("Spawning player: " + playerName);
 
@@ -120,6 +122,7 @@ public class PlayerManager : PlayerManagerBehavior
             Player player = playerObj.AddComponent<Player>();
             player.PlayerName = playerName;
             player.PlayerNetworkId = networkId;
+            player.Color = color;
             player.Initialize();
             Players.Add(player);
         });
@@ -131,7 +134,7 @@ public class PlayerManager : PlayerManagerBehavior
         {
             Player localPlayer = Players.Find(x => x.PlayerNetworkId == NetworkManager.Instance.Networker.Me.NetworkId);
             GameManager.Instance.ControllingPlayer = localPlayer;
-            PlayerUiManager.Instance.UpdateLocalPlayerInfo();
+            PlayerUiManager.Instance.SetupLocalPlayerInfo();
             PlayersSetup.Invoke();
         });
     }

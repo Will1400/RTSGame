@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     public uint PlayerNetworkId;
     public Team Team;
     public int Score;
+    public Color Color;
 
     public Transform BuildingHolder;
     public Transform UnitHolder;

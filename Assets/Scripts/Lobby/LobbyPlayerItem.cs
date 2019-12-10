@@ -69,6 +69,7 @@ public class LobbyPlayerItem : MonoBehaviour
 
     public void RequestChangeAvatarID(int avatarId)
     {
+
         _manager.ChangeAvatarID(this, avatarId);
     }
 
@@ -80,13 +81,8 @@ public class LobbyPlayerItem : MonoBehaviour
 
     public void ChangeAvatarID(int id)
     {
-        Color avatarColor = Color.white;
-
-        if (TeamColors.Length > id && id >= 0)
-            avatarColor = AvatarColors[id];
-
         AvatarID.text = id.ToString();
-        AvatarBG.color = avatarColor;
+        AvatarBG.color = ColorHelper.GetColor(id);
         ColorPicker.value = id;
     }
 
