@@ -3,6 +3,7 @@ using System.Collections;
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
+using UnityEngine.EventSystems;
 
 public class PlacementManager : MonoBehaviour
 {
@@ -52,13 +53,14 @@ public class PlacementManager : MonoBehaviour
 
             MoveBuildingToMouse();
 
-            if (Input.GetMouseButtonDown(0) && currentPlacementValidator.IsValidPosition())
+            if (Input.GetMouseButtonDown(0) && currentPlacementValidator.IsValidPosition() && !EventSystem.current.IsPointerOverGameObject())
                 PlaceCurrentObject();
         }
     }
 
     public void SpawnUnit(string unitName)
     {
+        CancelBuild();
         currentObject = Instantiate(UnitManager.Instance.GetUnit(unitName), GameManager.Instance.ControllingPlayer.UnitHolder);
         GameManager.Instance.CursorState = CursorState.Building;
         currentObject.GetComponent<Unit>().enabled = false;
@@ -69,6 +71,7 @@ public class PlacementManager : MonoBehaviour
 
     public void SpawnBuilding(string buildingName)
     {
+        CancelBuild();
         currentObject = Instantiate(BuildingManager.Instance.GetBuilding(buildingName), GameManager.Instance.ControllingPlayer.BuildingHolder);
         GameManager.Instance.ControllingPlayer.Buildings.Add(currentObject);
         GameManager.Instance.CursorState = CursorState.Building;

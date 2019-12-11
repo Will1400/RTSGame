@@ -62,7 +62,7 @@ public class InputManager : MonoBehaviour
         }
         if (Input.GetButton("Stop"))
         {
-            OrderStop.Invoke();
+            GiveOrderStop();
         }
     }
 
@@ -72,6 +72,10 @@ public class InputManager : MonoBehaviour
         {
             Cancel.Invoke();
         }
+    }
 
+    public void GiveOrderStop()
+    {
+        OrderStop.Invoke();
     }
 }
