@@ -7,12 +7,16 @@ using BeardedManStudios.Forge.Networking;
 using UnityEngine.Events;
 using BeardedManStudios.Forge.Networking.Unity;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISelectable
 {
     #region Fields
     [SerializeField]
     protected Player owner;
+
+    [SerializeField]
+    private Image minimapIcon;
 
     [SerializeField]
     protected string unitName;
@@ -142,7 +146,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
             agent = _agent;
             agent.speed = speed;
         }
-
+        minimapIcon.color = owner.Color;
         Material = new Material(GetComponent<Renderer>().material);
     }
 
