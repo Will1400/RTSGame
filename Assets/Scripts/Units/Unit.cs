@@ -6,6 +6,7 @@ using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking;
 using UnityEngine.Events;
 using BeardedManStudios.Forge.Networking.Unity;
+using System.Collections.Generic;
 
 public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISelectable
 {
@@ -87,6 +88,14 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     public bool IsSelected { get; set; }
 
+    public string UnitName
+    {
+        get
+        {
+            return unitName;
+        }
+    }
+
     public UnitState UnitState
     {
         get
@@ -135,6 +144,16 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         }
 
         Material = new Material(GetComponent<Renderer>().material);
+    }
+
+    public virtual Dictionary<string, float> GetStats()
+    {
+        return new Dictionary<string, float>
+        {
+            { "Health", health },
+            { "Damage", damage },
+            { "Defense", defense }
+        };
     }
 
     protected void GetNearbyTarget()
@@ -268,7 +287,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     {
         if (networkObject.IsOwner)
         {
-            SelectionController.Instance.selected.Remove(transform);
+            SelectionManager.Instance.Selected.Remove(transform);
             PlayerUiManager.Instance.UpdateLocalPlayerInfo();
         }
         PlayerManager.Instance.GetPlayer(owner.PlayerNetworkId).Units.Remove(gameObject);

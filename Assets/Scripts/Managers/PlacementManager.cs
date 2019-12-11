@@ -4,8 +4,10 @@ using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
 
-public class PlacementController : MonoBehaviour
+public class PlacementManager : MonoBehaviour
 {
+    public static PlacementManager Instance;
+
     [SerializeField]
     private GameObject currentObject;
     [SerializeField]
@@ -15,6 +17,14 @@ public class PlacementController : MonoBehaviour
 
     ObjectType objectType;
     int objectIndex;
+
+    private void Awake()
+    {
+        if (Instance is null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+    }
 
     private void Start()
     {

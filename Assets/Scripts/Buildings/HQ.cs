@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class HQ : MonoBehaviour, IDamageable, ISelectable
 {
@@ -31,5 +32,10 @@ public class HQ : MonoBehaviour, IDamageable, ISelectable
     {
         GetComponent<MeshRenderer>().material = material;
         IsSelected = false;
+    }
+
+    public Dictionary<string, float> GetStats()
+    {
+        throw new System.NotImplementedException();
     }
 }
