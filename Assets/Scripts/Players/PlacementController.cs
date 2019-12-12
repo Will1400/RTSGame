@@ -3,12 +3,9 @@ using System.Collections;
 
 public class PlacementController : MonoBehaviour
 {
-    [SerializeField, ReadOnly]
     private GameObject currentObject;
-    [SerializeField, ReadOnly]
     private PlacementValidator currentPlacementValidator;
 
-    [SerializeField, ReadOnly]
     bool isColliderTrigger;
 
     private void Start()

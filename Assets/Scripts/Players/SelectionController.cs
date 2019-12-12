@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class SelectionController : MonoBehaviour
 {
-    [SerializeField, ReadOnly]
     List<Transform> selected = new List<Transform>();
 
     [SerializeField]
@@ -15,7 +14,6 @@ public class SelectionController : MonoBehaviour
     [SerializeField]
     private Color centerColor = new Color(0.8f, 0.8f, 0.95f, 0.1f);
 
-    [SerializeField, ReadOnly]
     private bool isDragging = false;
     private Vector3 startingDragPosition;
 
