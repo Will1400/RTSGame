@@ -132,7 +132,6 @@ GameObject:
   - component: {fileID: 314813449}
   - component: {fileID: 314813448}
   - component: {fileID: 314813447}
-  - component: {fileID: 314813446}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -140,18 +139,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &314813446
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 314813445}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 241056d4fb514354b8db464f3cc1b44a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &314813447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,7 +180,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   m_RenderingPathCustomFrameSettings:
     bitDatas:
-      data1: 69284256546589
+      data1: 69456055238429
       data2: 4539628424389459968
     lodBias: 1
     lodBiasMode: 0
@@ -204,7 +191,7 @@ MonoBehaviour:
       data1: 0
       data2: 0
   defaultFrameSettings: 0
-  m_Version: 5
+  m_Version: 6
   m_ObsoleteRenderingPath: 0
   m_ObsoleteFrameSettings:
     overrides: 0
@@ -396,11 +383,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Version: 1
-  shadowResolution: 512
+  shadowResolution: 256
   shadowDimmer: 1
   volumetricShadowDimmer: 1
   shadowFadeDistance: 10000
-  contactShadows: 0
+  contactShadows: 1
   shadowTint: {r: 0, g: 0, b: 0, a: 1}
   viewBiasMin: 0.2
   viewBiasMax: 100
