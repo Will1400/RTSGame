@@ -6,7 +6,6 @@ using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.Forge.Networking.Generated;
 using System.Linq;
-using BeardedManStudios.Forge.Logging;
 using UnityEngine.Events;
 using System;
 
@@ -54,7 +53,6 @@ public class PlayerManager : PlayerManagerBehavior
 
         foreach (var item in lobbyPlayers)
         {
-
             Debug.Log("Sending rpc to create player: " + item.Name);
             networkObject.SendRpc(RPC_CREATE_PLAYER, Receivers.AllBuffered, item.Name, item.NetworkId, ColorHelper.GetColor(item.AvatarID));
             Debug.Log("Sending rpc to assign player to team. " + item.Name + " Team: " + item.TeamID);
@@ -114,6 +112,7 @@ public class PlayerManager : PlayerManagerBehavior
             Debug.Log("Recived rpc");
             string playerName = args.GetNext<string>();
             uint networkId = args.GetNext<uint>();
+            Vector3 spawnpoint = GameManager.Instance.SpawnPoints[Convert.ToInt32(networkId)].position;
             Color color = args.GetNext<Color>();
             Debug.Log("Creating player: " + playerName);
             BMSLogger.Instance.Log("Spawning player: " + playerName);
@@ -123,8 +122,16 @@ public class PlayerManager : PlayerManagerBehavior
             player.PlayerName = playerName;
             player.PlayerNetworkId = networkId;
             player.Color = color;
-            player.Initialize();
+            player.Initialize(spawnpoint);
             Players.Add(player);
+
+            if (networkObject.IsServer)
+            {
+                player.PlayerDied.AddListener((() =>
+                {
+                    networkObject.SendRpc(RPC_PLAYER_DIED, Receivers.AllBuffered, player.PlayerNetworkId);
+                }));
+            }
         });
     }
 
@@ -135,6 +142,7 @@ public class PlayerManager : PlayerManagerBehavior
             Player localPlayer = Players.Find(x => x.PlayerNetworkId == NetworkManager.Instance.Networker.Me.NetworkId);
             GameManager.Instance.ControllingPlayer = localPlayer;
             PlayerUiManager.Instance.SetupLocalPlayerInfo();
+
             PlayersSetup.Invoke();
         });
     }
@@ -142,5 +150,27 @@ public class PlayerManager : PlayerManagerBehavior
     public Player GetPlayer(uint networkId)
     {
         return Players.Find(x => x.PlayerNetworkId == networkId);
+    }
+
+    public override void PlayerDied(RpcArgs args)
+    {
+        Player player = GetPlayer(args.GetNext<uint>());
+        if (player.PlayerNetworkId == NetworkManager.Instance.Networker.Me.NetworkId)
+        {
+            SelectionUiManager.Instance.DisableUi();
+            SelectionManager.Instance.enabled = false;
+            BuildingManager.Instance.enabled = false;
+        }
+
+        player.Team.Players.Remove(player);
+        player.Units.Clear();
+        player.Buildings.Clear();
+        foreach (Transform item in player.transform)
+        {
+            Destroy(item.gameObject);
+        }
+        Destroy(player);
+
+        PlayerUiManager.Instance.UpdatePlayerList(new RpcArgs());
     }
 }

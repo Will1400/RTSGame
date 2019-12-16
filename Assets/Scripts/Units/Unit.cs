@@ -146,7 +146,6 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
             agent = _agent;
             agent.speed = speed;
         }
-        minimapIcon.color = owner.Color;
         Material = new Material(GetComponent<Renderer>().material);
     }
 
@@ -162,9 +161,13 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     protected void GetNearbyTarget()
     {
+        if (!initialized)
+            return;
+
         // Gets all possible targets not controlled by the team
         var possibleTargets = Physics.OverlapSphere(transform.position, visionRange, LayerMask.GetMask("Units", "Buildings")).Where(x => x.GetComponent<IControlledByPlayer>() != null).ToList();
         possibleTargets.RemoveAll(x => Player.IsOnSameTeam(this, x.GetComponent<IControlledByPlayer>()));
+        possibleTargets.RemoveAll(x => x.gameObject.CompareTag("Units") && x.GetComponent<Unit>().owner == null);
 
         float shortestDistance = Mathf.Infinity;
         foreach (var target in possibleTargets)
@@ -309,6 +312,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     {
         Player player = PlayerManager.Instance.GetPlayer(args.GetNext<uint>());
         owner = player;
+        minimapIcon.color = owner.Color;
         player.Units.Add(gameObject);
         transform.SetParent(player.UnitHolder);
     }

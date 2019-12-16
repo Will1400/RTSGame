@@ -1,29 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
-public class HQ : MonoBehaviour, IDamageable, ISelectable
+public class HQ : MonoBehaviour, IDamageable, ISelectable, IControlledByPlayer
 {
-    public float Health { get; set; }
+    public float Health { get; set; } = 100;
 
     public float Defense { get; set; }
     public DefenseType DefenseType { get; set; } = DefenseType.AllLight;
     public bool IsSelected { get; set; }
+    public Player Owner { get; set; }
+
+    public UnityEvent Die;
 
     private Material material;
 
     public void Damage(float amount, DamageType damageType)
     {
+        amount = DamageHelper.CalculateEffectiveDamage(amount, damageType, Defense, DefenseType);
+        Health -= amount;
+        Debug.Log("HQ took: " + amount + " Damage");
+        if (Health <= 0)
+        {
+            Die.Invoke();
+        }
     }
 
     private void Start()
     {
-        material = new Material(GetComponent<MeshRenderer>().material);
+        material = new Material(GetComponentInChildren<MeshRenderer>().material);
     }
 
     public void Select()
     {
-        Renderer renderer = GetComponent<MeshRenderer>();
+        Renderer renderer = GetComponentInChildren<MeshRenderer>();
         renderer.material.SetColor("_BaseColor", Color.blue);
         IsSelected = true;
     }
@@ -36,6 +47,10 @@ public class HQ : MonoBehaviour, IDamageable, ISelectable
 
     public Dictionary<string, float> GetStats()
     {
-        throw new System.NotImplementedException();
+        return new Dictionary<string, float>
+        {
+            { "Health", Health },
+            { "Defense", Defense }
+        };
     }
 }

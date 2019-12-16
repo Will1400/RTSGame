@@ -6,6 +6,9 @@ public class MeleeUnit : Unit
 {
     protected void Update()
     {
+        if (!initialized)
+            return;
+
         if (target != null && IsTargetOutOfRange())
         {
             target = null;

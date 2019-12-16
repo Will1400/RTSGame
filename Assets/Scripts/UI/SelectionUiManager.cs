@@ -134,4 +134,13 @@ public class SelectionUiManager : MonoBehaviour
         stats[key].text = $"{key}: {value.ToString()}";
         stats[key].enabled = true;
     }
+
+    public void DisableUi()
+    {
+        SelectionManager.Instance.SelectionChanged.RemoveListener(UpdateContext);
+        actionsPanel.SetActive(false);
+        buildUnitsPanel.SetActive(false);
+        selectedInfoPanel.SetActive(false);
+        contextOptionsPanel.SetActive(false);
+    }
 }

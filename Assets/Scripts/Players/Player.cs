@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class Player : MonoBehaviour
 
     public List<GameObject> Buildings;
     public List<GameObject> Units;
+
+    public UnityEvent PlayerDied;
 
     public List<GameObject> AllControlledObjects
     {
@@ -33,11 +36,13 @@ public class Player : MonoBehaviour
         if (Team == null && transform.parent != null && transform.parent.TryGetComponent(out Team team))
             Team = team;
 
+        PlayerDied = new UnityEvent();
+
         Buildings = Buildings ?? new List<GameObject>();
         Units = Units ?? new List<GameObject>();
     }
 
-    public void Initialize()
+    public void Initialize(Vector3 spawnpoint)
     {
         if (transform.Find("Buildings") != null)
             BuildingHolder = transform.Find("Buildings").transform;
@@ -51,6 +56,11 @@ public class Player : MonoBehaviour
 
         BuildingHolder.SetParent(transform);
         UnitHolder.SetParent(transform);
+
+        HQ = Instantiate(BuildingManager.Instance.GetBuilding("HQ"), spawnpoint, Quaternion.identity, BuildingHolder);
+        var hqComponent = HQ.GetComponent<HQ>();
+        hqComponent.Die.AddListener(() => { PlayerDied.Invoke(); });
+        hqComponent.Owner = this;
     }
 
     public static bool IsOnSameTeam(IControlledByPlayer first, IControlledByPlayer second)
