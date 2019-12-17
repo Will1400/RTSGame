@@ -391,7 +391,7 @@ MonoBehaviour:
   damageType: 4
   visionRange: 10
   attackRange: 4
-  speed: 1
+  speed: 2
   attackRate: 1
   defense: 5
   defenseType: 1
