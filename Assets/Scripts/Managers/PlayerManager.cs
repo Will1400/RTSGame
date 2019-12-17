@@ -155,11 +155,12 @@ public class PlayerManager : PlayerManagerBehavior
     public override void PlayerDied(RpcArgs args)
     {
         Player player = GetPlayer(args.GetNext<uint>());
-        if (player.PlayerNetworkId == NetworkManager.Instance.Networker.Me.NetworkId)
+        if (player.PlayerNetworkId == NetworkManager.Instance.Networker.Me.NetworkId) // Local player
         {
-            SelectionUiManager.Instance.DisableUi();
+            SelectionUiManager.Instance.DisableSelectionUi();
             SelectionManager.Instance.enabled = false;
             PlacementManager.Instance.enabled = false;
+            PlayerUiManager.Instance.LocalPlayerDied();
         }
 
         player.Team.Players.Remove(player);

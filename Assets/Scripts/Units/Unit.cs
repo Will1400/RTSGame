@@ -135,7 +135,6 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         base.NetworkStart();
         Setup();
 
-        networkObject.Health = health;
         initialized = true;
     }
 
@@ -148,6 +147,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         }
 
         Material = new Material(GetComponent<Renderer>().material);
+        networkObject.Health = health;
     }
 
     public virtual Dictionary<string, float> GetStats()
@@ -168,7 +168,6 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         // Gets all possible targets not controlled by the team
         var possibleTargets = Physics.OverlapSphere(transform.position, visionRange, LayerMask.GetMask("Units", "Buildings")).Where(x => x.GetComponent<IControlledByPlayer>() != null).ToList();
         possibleTargets.RemoveAll(x => Player.IsOnSameTeam(this, x.GetComponent<IControlledByPlayer>()));
-        //possibleTargets.RemoveAll(x => x.gameObject.CompareTag("Units") && x.GetComponent<Unit>().owner == null);
 
         float shortestDistance = Mathf.Infinity;
         foreach (var target in possibleTargets)
@@ -261,6 +260,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         UnitState = UnitState.Idle;
         networkObject.SendRpc(RPC_ORDER_STOP, Receivers.All);
     }
+
     protected void FixedUpdate()
     {
         if (!initialized)

@@ -135,7 +135,7 @@ public class SelectionUiManager : MonoBehaviour
         stats[key].enabled = true;
     }
 
-    public void DisableUi()
+    public void DisableSelectionUi()
     {
         SelectionManager.Instance.SelectionChanged.RemoveListener(UpdateContext);
         actionsPanel.SetActive(false);

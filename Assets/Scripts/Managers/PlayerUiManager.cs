@@ -14,6 +14,7 @@ public class PlayerUiManager : PlayerUiManagerBehavior
 
     [SerializeField]
     private GameObject playerListPrefab;
+    private GameObject playerDiedPanel;
     private Canvas ui;
     private Transform playerListHolder;
     private Transform playerInfo;
@@ -28,11 +29,18 @@ public class PlayerUiManager : PlayerUiManagerBehavior
         ui = GameObject.Find("UI").GetComponent<Canvas>();
         playerListHolder = ui.transform.Find("Player List/Viewport/Content");
         playerInfo = ui.transform.Find("Player Info Panel/");
+        playerDiedPanel = ui.transform.Find("Player Died Panel").gameObject;
+        playerDiedPanel.SetActive(false);
     }
 
     public void SetupPlayerList()
     {
         networkObject.SendRpc(RPC_UPDATE_PLAYER_LIST, true, Receivers.AllBuffered);
+    }
+
+    public void LocalPlayerDied()
+    {
+        playerDiedPanel.SetActive(true);
     }
 
     public void SetupLocalPlayerInfo()
