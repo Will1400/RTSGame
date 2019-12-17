@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 4997460111497957124}
   - component: {fileID: 4997460111497957127}
   - component: {fileID: 4997460111497957126}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Building
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1428,6 +1428,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4997460111580119233}
   - component: {fileID: 7578797062220493704}
+  - component: {fileID: 1725919743268354962}
   m_Layer: 10
   m_Name: HQ
   m_TagString: Building
@@ -1465,3 +1466,16 @@ MonoBehaviour:
   Die:
     m_PersistentCalls:
       m_Calls: []
+--- !u!65 &1725919743268354962
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4997460111580119232}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.6061673, y: 3.11411, z: 2.7498074}
+  m_Center: {x: 1.0039275, y: 1.4581704, z: -1.0158911}

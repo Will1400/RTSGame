@@ -146,6 +146,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
             agent = _agent;
             agent.speed = speed;
         }
+
         Material = new Material(GetComponent<Renderer>().material);
     }
 
@@ -167,7 +168,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         // Gets all possible targets not controlled by the team
         var possibleTargets = Physics.OverlapSphere(transform.position, visionRange, LayerMask.GetMask("Units", "Buildings")).Where(x => x.GetComponent<IControlledByPlayer>() != null).ToList();
         possibleTargets.RemoveAll(x => Player.IsOnSameTeam(this, x.GetComponent<IControlledByPlayer>()));
-        possibleTargets.RemoveAll(x => x.gameObject.CompareTag("Units") && x.GetComponent<Unit>().owner == null);
+        //possibleTargets.RemoveAll(x => x.gameObject.CompareTag("Units") && x.GetComponent<Unit>().owner == null);
 
         float shortestDistance = Mathf.Infinity;
         foreach (var target in possibleTargets)
@@ -287,7 +288,8 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     public override void MoveToPosition(RpcArgs args)
     {
-        agent.SetDestination(args.GetNext<Vector3>());
+        if (agent != null)
+            agent.SetDestination(args.GetNext<Vector3>());
     }
 
     public override void Die(RpcArgs args)

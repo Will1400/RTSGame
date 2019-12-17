@@ -159,7 +159,7 @@ public class PlayerManager : PlayerManagerBehavior
         {
             SelectionUiManager.Instance.DisableUi();
             SelectionManager.Instance.enabled = false;
-            BuildingManager.Instance.enabled = false;
+            PlacementManager.Instance.enabled = false;
         }
 
         player.Team.Players.Remove(player);

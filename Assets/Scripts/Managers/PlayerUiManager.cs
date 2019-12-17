@@ -54,6 +54,11 @@ public class PlayerUiManager : PlayerUiManagerBehavior
             List<Player> players = FindObjectsOfType<Player>().ToList();
             players = players.OrderByDescending(x => x.Score).ToList();
 
+            foreach (Transform item in playerListHolder)
+            {
+                Destroy(item.gameObject);
+            }
+
             for (int i = 0; i < players.Count; i++)
             {
                 Player player = players[i];
