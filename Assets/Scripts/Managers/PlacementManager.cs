@@ -65,7 +65,7 @@ public class PlacementManager : MonoBehaviour
         GameManager.Instance.CursorState = CursorState.Building;
         currentObject.GetComponent<Unit>().enabled = false;
         objectType = ObjectType.Unit;
-        objectIndex = UnitManager.Instance.GetIndexOfUnitName(unitName);
+        objectIndex = UnitManager.Instance.GetIndexOfUnitName(unitName) - 1;
         AddValidation();
     }
 
@@ -104,10 +104,10 @@ public class PlacementManager : MonoBehaviour
 
         if (objectType == ObjectType.Unit)
         {
-           NetworkManager.Instance.InstantiateUnit(0, currentObject.transform.position).networkStarted += (behavior) =>
+           NetworkManager.Instance.InstantiateUnit(objectIndex, currentObject.transform.position).networkStarted += (behavior) =>
             {
-                UnitBehavior bh = behavior as UnitBehavior;
-                bh.networkObject.SendRpc(2 + 5, Receivers.AllBuffered, GameManager.Instance.ControllingPlayer.PlayerNetworkId);
+                UnitBehavior unit = behavior as UnitBehavior;
+                unit.networkObject.SendRpc(2 + 5, Receivers.AllBuffered, GameManager.Instance.ControllingPlayer.PlayerNetworkId);
                 PlayerUiManager.Instance.UpdateLocalPlayerInfo();
             };
         }

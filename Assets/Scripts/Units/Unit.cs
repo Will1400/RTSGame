@@ -19,6 +19,9 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     private Image minimapIcon;
 
     [SerializeField]
+    private GameObject selectedIndicator;
+
+    [SerializeField]
     protected string unitName;
 
     [SerializeField]
@@ -60,8 +63,6 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     protected LineRenderer lineRenderer;
 
     protected bool initialized;
-
-    private Material Material;
 
     #endregion
 
@@ -145,8 +146,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
             agent = _agent;
             agent.speed = speed;
         }
-
-        Material = new Material(GetComponent<Renderer>().material);
+       
         networkObject.Health = health;
     }
 
@@ -234,14 +234,13 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     public void Select()
     {
-        Renderer renderer = GetComponent<MeshRenderer>();
-        renderer.material.SetColor("_BaseColor", Color.green);
+        selectedIndicator.SetActive(true);
         IsSelected = true;
     }
 
     public void Deselect()
     {
-        GetComponent<MeshRenderer>().material = Material;
+        selectedIndicator.SetActive(false);
         IsSelected = false;
     }
 
@@ -314,7 +313,9 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     {
         Player player = PlayerManager.Instance.GetPlayer(args.GetNext<uint>());
         owner = player;
-        minimapIcon.color = owner.Color;
+        if (minimapIcon != null)
+            minimapIcon.color = owner.Color;
+
         player.Units.Add(gameObject);
         transform.SetParent(player.UnitHolder);
     }

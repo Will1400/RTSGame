@@ -5,30 +5,36 @@ public class RangedUnit : Unit
 {
     protected virtual void Update()
     {
-        if (IsTargetOutOfRange())
+        if (!initialized)
+            return;
+
+        if (target != null && IsTargetOutOfRange())
         {
             target = null;
-            agent.ResetPath();
+            if (UnitState != UnitState.Walking)
+                agent.ResetPath();
         }
 
-        if (target != null)
+        if (UnitState != UnitState.Walking)
         {
-            if (CanAttackTarget())
+            if (target != null)
             {
-                AttackTarget();
+                if (CanAttackTarget())
+                {
+                    AttackTarget();
 
-                if (agent.hasPath)
-                    agent.ResetPath();
+                    if (agent.hasPath)
+                        agent.ResetPath();
+                }
+                else
+                {
+                    MoveIntoAttackRange(target.position);
+                }
             }
             else
             {
-                MoveIntoAttackRange(target.position); 
+                GetNearbyTarget();
             }
-
-        }
-        else
-        {
-            GetNearbyTarget();
         }
     }
 }

@@ -4,28 +4,38 @@ using System.Collections.Generic;
 
 public class PlacementValidator : MonoBehaviour
 {
-    private List<Collider> colliders;
+    [SerializeField]
+    private List<Collider> collidesWith;
 
     private Rigidbody rigidbody;
     bool isColliderTrigger;
+    private Collider collider;
 
     private void Start()
     {
-        colliders = new List<Collider>();
+        collidesWith = new List<Collider>();
         if (!TryGetComponent<Rigidbody>(out _))
         {
             rigidbody = gameObject.AddComponent<Rigidbody>();
         }
+        if (TryGetComponent(out Collider _collider))
+        {
+            collider = _collider;
+        }
+        else
+        {
+            collider = GetComponentInChildren<Collider>();
+        }
 
-        isColliderTrigger = gameObject.GetComponent<Collider>().isTrigger;
-        gameObject.GetComponent<Collider>().isTrigger = true;
+        isColliderTrigger = collider.isTrigger;
+        collider.isTrigger = true;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Building")
         {
-            colliders.Add(other);
+            collidesWith.Add(other);
         }
     }
 
@@ -33,13 +43,13 @@ public class PlacementValidator : MonoBehaviour
     {
         if (other.tag == "Building")
         {
-            colliders.Remove(other);
+            collidesWith.Remove(other);
         }
     }
 
     public bool IsValidPosition()
     {
-        return colliders.Count == 0;
+        return collidesWith.Count == 0;
     }
 
     private void OnDestroy()
@@ -49,7 +59,9 @@ public class PlacementValidator : MonoBehaviour
             Destroy(rigidbody);
         }
 
-        if (!isColliderTrigger)
-            gameObject.GetComponent<Collider>().isTrigger = false;
+        if (!isColliderTrigger && collider != null)
+        {
+            collider.isTrigger = false;
+        }
     }
 }

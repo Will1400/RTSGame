@@ -52,10 +52,10 @@ MonoBehaviour:
   PlacementControllerNetworkObject: []
   PlayerManagerNetworkObject:
   - {fileID: 4891376599797580833, guid: 519ca78d1e5a5d7488aefa9f148e4fcd, type: 3}
-  PlayerNetworkObject: []
+  PlayerUiManagerNetworkObject:
+  - {fileID: 4891376599797580833, guid: a05a2a3d8d0466049bfdd4413f2597ed, type: 3}
   TestNetworkObject: []
   UnitNetworkObject:
   - {fileID: 5514335657491701633, guid: a40f4bcd654c340439259118576ac5e1, type: 3}
-  PlayerUiManagerNetworkObject:
-  - {fileID: 4891376599797580833, guid: a05a2a3d8d0466049bfdd4413f2597ed, type: 3}
+  - {fileID: 1002660251842647416, guid: 245700affb8c57f4498c6e9bc7c10137, type: 3}
   automaticScenes: 1
