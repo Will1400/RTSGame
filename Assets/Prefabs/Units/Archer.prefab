@@ -302,7 +302,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1002660251101889206}
-  - component: {fileID: 3705125614718705232}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -329,19 +328,6 @@ Transform:
   m_Father: {fileID: 1002660251842647418}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &3705125614718705232
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1002660251101889205}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.0720253, y: 1.9628536, z: 1}
-  m_Center: {x: 0.03601265, y: 0, z: 0}
 --- !u!1 &1002660251260343611
 GameObject:
   m_ObjectHideFlags: 0
@@ -446,8 +432,9 @@ GameObject:
   - component: {fileID: 1002660251842647418}
   - component: {fileID: 1002660251842647417}
   - component: {fileID: 7376439290031458231}
-  - component: {fileID: 2525502270317254590}
   - component: {fileID: 4493622063311618735}
+  - component: {fileID: 2525502270317254590}
+  - component: {fileID: 4852119549171805092}
   m_Layer: 12
   m_Name: Archer
   m_TagString: Unit
@@ -512,6 +499,22 @@ MonoBehaviour:
   health: 200
   defense: 5
   defenseType: 1
+  destroyObjectOnDeath: 0
+--- !u!114 &4493622063311618735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002660251842647416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e656d996a22c08448b1471d632fb2995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvas: {fileID: 2937996515766983660}
+  healthBar: {fileID: 3359280615107770521}
+  healthSystem: {fileID: 7376439290031458231}
 --- !u!195 &2525502270317254590
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -534,21 +537,19 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &4493622063311618735
-MonoBehaviour:
+--- !u!65 &4852119549171805092
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1002660251842647416}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e656d996a22c08448b1471d632fb2995, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvas: {fileID: 2937996515766983660}
-  healthBar: {fileID: 3359280615107770521}
-  healthSystem: {fileID: 7376439290031458231}
+  serializedVersion: 2
+  m_Size: {x: 1.0720253, y: 1.9628536, z: 1}
+  m_Center: {x: 0.03601265, y: 0, z: 0}
 --- !u!1 &1002660251862494055
 GameObject:
   m_ObjectHideFlags: 0
