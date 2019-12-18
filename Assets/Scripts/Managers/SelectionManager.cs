@@ -65,7 +65,7 @@ public class SelectionManager : MonoBehaviour
     {
         if (Input.GetButtonDown("Primary Mouse") && GameManager.Instance.CursorState == CursorState.None && !EventSystem.current.IsPointerOverGameObject())
         {
-            bool isMultiSelecting = Input.GetButton("MultiSelect");
+            bool isMultiSelecting = Input.GetButton("Shift");
             startingDragPosition = Input.mousePosition;
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -99,7 +99,7 @@ public class SelectionManager : MonoBehaviour
         {
             if (isDragging)
             {
-                if (!Input.GetButton("MultiSelect"))
+                if (!Input.GetButton("Shift"))
                     DeselectAll();
 
                 foreach (var selectableObject in GameManager.Instance.ControllingPlayer.AllControlledObjects)

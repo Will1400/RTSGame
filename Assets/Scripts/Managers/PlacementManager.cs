@@ -100,22 +100,24 @@ public class PlacementManager : MonoBehaviour
 
     void PlaceCurrentObject()
     {
-        Destroy(currentPlacementValidator);
-
         if (objectType == ObjectType.Unit)
         {
-           NetworkManager.Instance.InstantiateUnit(objectIndex, currentObject.transform.position).networkStarted += (behavior) =>
-            {
-                UnitBehavior unit = behavior as UnitBehavior;
-                unit.networkObject.SendRpc(2 + 5, Receivers.AllBuffered, GameManager.Instance.ControllingPlayer.PlayerNetworkId);
-                PlayerUiManager.Instance.UpdateLocalPlayerInfo();
-            };
+            NetworkManager.Instance.InstantiateUnit(objectIndex, currentObject.transform.position).networkStarted += (behavior) =>
+             {
+                 UnitBehavior unit = behavior as UnitBehavior;
+                 unit.networkObject.SendRpc(2 + 5, Receivers.AllBuffered, GameManager.Instance.ControllingPlayer.PlayerNetworkId);
+                 PlayerUiManager.Instance.UpdateLocalPlayerInfo();
+             };
         }
 
-        Destroy(currentObject);
-        currentObject = null;
-        currentPlacementValidator = null;
-        GameManager.Instance.CursorState = CursorState.None;
+        if (!Input.GetButton("Shift"))
+        {
+            Destroy(currentPlacementValidator);
+            Destroy(currentObject);
+            currentObject = null;
+            currentPlacementValidator = null;
+            GameManager.Instance.CursorState = CursorState.None;
+        }
     }
 
     void CancelBuild()
