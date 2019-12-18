@@ -11,4 +11,6 @@ public interface IDamageable
     DefenseType DefenseType { get; set; }
 
     void Damage(float amount, DamageType damageType);
+
+    void Heal(float amount);
 }

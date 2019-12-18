@@ -9,7 +9,8 @@ using BeardedManStudios.Forge.Networking.Unity;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISelectable
+[RequireComponent(typeof(HealthSystem))]
+public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
 {
     #region Fields
     [SerializeField]
@@ -26,9 +27,6 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     [SerializeField]
     protected float cost;
-
-    [SerializeField]
-    protected float health;
 
     [SerializeField]
     protected float damage;
@@ -48,12 +46,6 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     [SerializeField]
     protected float attackRate;
 
-    [SerializeField]
-    protected float defense;
-
-    [SerializeField]
-    protected DefenseType defenseType;
-
     protected Transform target;
 
     protected float nextAttack;
@@ -63,6 +55,8 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     protected LineRenderer lineRenderer;
 
     protected bool initialized;
+
+    protected HealthSystem healthSystem;
 
     #endregion
 
@@ -75,20 +69,17 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     public float Health
     {
-        get { return health; }
-        set { health = value; }
+        get { return healthSystem.Health; }
     }
 
     public float Defense
     {
-        get { return defense; }
-        set { defense = value; }
+        get { return healthSystem.Defense; }
     }
 
     public DefenseType DefenseType
     {
-        get { return defenseType; }
-        set { defenseType = value; }
+        get { return healthSystem.DefenseType; }
     }
 
     public bool IsSelected { get; set; }
@@ -115,22 +106,6 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
 
     #endregion
 
-    public virtual void Damage(float amount, DamageType damageType)
-    {
-        amount = DamageHelper.CalculateEffectiveDamage(amount, damageType, defense, defenseType);
-
-        if (amount < 0)
-            amount = 0;
-
-        health -= amount;
-
-        if (health <= 0)
-        {
-            if (networkObject.IsOwner)
-                networkObject.SendRpc(RPC_DIE, Receivers.AllBuffered);
-        }
-    }
-
     protected override void NetworkStart()
     {
         base.NetworkStart();
@@ -146,8 +121,25 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
             agent = _agent;
             agent.speed = speed;
         }
+        healthSystem = GetComponent<HealthSystem>();
 
-        networkObject.Health = health;
+        networkObject.Health = Health;
+        healthSystem.HealthChanged += () =>
+        {
+            if (networkObject.IsOwner)
+            {
+                if (Health <= 0)
+                {
+                    networkObject.SendRpc(RPC_DIE, Receivers.AllBuffered);
+                }
+
+                networkObject.Health = Health;
+            }
+            else
+            {
+                healthSystem.Health = networkObject.Health;
+            }
+        };
     }
 
     protected virtual void ChangeColors()
@@ -166,9 +158,9 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     {
         return new Dictionary<string, float>
         {
-            { "Health", health },
+            { "Health", Health },
             { "Damage", damage },
-            { "Defense", defense }
+            { "Defense", Defense }
         };
     }
 
