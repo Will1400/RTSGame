@@ -26,7 +26,7 @@ public class MeleeUnit : Unit
                     if (agent.hasPath)
                         agent.ResetPath();
                 }
-                else
+                else if (UnitState != UnitState.MoveAttacking)
                 {
                     MoveIntoAttackRange(target.position);
                 }

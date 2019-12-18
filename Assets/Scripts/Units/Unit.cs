@@ -146,8 +146,20 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
             agent = _agent;
             agent.speed = speed;
         }
-       
+
         networkObject.Health = health;
+    }
+
+    protected virtual void ChangeColors()
+    {
+        Color mainColor = owner.Color;
+        Renderer renderer;
+        if (transform.Find("Goggles"))
+            renderer = transform.Find("Goggles").GetComponent<Renderer>();
+        else
+            renderer = transform.Find("Model/Goggles").GetComponent<Renderer>();
+
+        renderer.material.SetColor("_BaseColor", mainColor);
     }
 
     public virtual Dictionary<string, float> GetStats()
@@ -166,7 +178,8 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
             return;
 
         // Gets all possible targets not controlled by the team
-        var possibleTargets = Physics.OverlapSphere(transform.position, visionRange, LayerMask.GetMask("Units", "Buildings")).Where(x => x.GetComponent<IControlledByPlayer>() != null).ToList();
+        var possibleTargets = Physics.OverlapSphere(transform.position, visionRange, LayerMask.GetMask("Units", "Buildings")).ToList();
+        possibleTargets.RemoveAll(x => x.GetComponent<IControlledByPlayer>() == null);
         possibleTargets.RemoveAll(x => Player.IsOnSameTeam(this, x.GetComponent<IControlledByPlayer>()));
 
         float shortestDistance = Mathf.Infinity;
@@ -223,11 +236,12 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
     /// <summary>
     /// Attacks the current target without any checks
     /// </summary>
-    protected void AttackTarget()
+    protected virtual void AttackTarget()
     {
         if (target == null)
             return;
 
+        transform.LookAt(target);
         target.GetComponent<IDamageable>().Damage(damage, damageType);
         nextAttack = Time.time + attackRate;
     }
@@ -298,7 +312,10 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
             SelectionManager.Instance.Selected.Remove(transform);
             PlayerUiManager.Instance.UpdateLocalPlayerInfo();
         }
-        PlayerManager.Instance.GetPlayer(owner.PlayerNetworkId).Units.Remove(gameObject);
+        if (gameObject != null)
+        {
+            PlayerManager.Instance.GetPlayer(owner.PlayerNetworkId).Units.Remove(gameObject);
+        }
 
         Destroy(gameObject);
     }
@@ -316,6 +333,7 @@ public abstract class Unit : UnitBehavior, IDamageable, IControlledByPlayer, ISe
         if (minimapIcon != null)
             minimapIcon.color = owner.Color;
 
+        ChangeColors();
         player.Units.Add(gameObject);
         transform.SetParent(player.UnitHolder);
     }

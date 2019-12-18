@@ -19,7 +19,6 @@ public class PlayerManager : PlayerManagerBehavior
 
     public UnityEvent PlayersSetup;
 
-
     private void Awake()
     {
         if (Instance is null)
@@ -71,7 +70,6 @@ public class PlayerManager : PlayerManagerBehavior
     {
         MainThreadManager.Run(() =>
         {
-            Debug.Log("Recived rpc");
             uint playerNetworkId = args.GetNext<uint>();
             int teamId = args.GetNext<int>();
             Player player = Players.Find(x => x.PlayerNetworkId == playerNetworkId);
@@ -93,7 +91,6 @@ public class PlayerManager : PlayerManagerBehavior
     {
         MainThreadManager.Run(() =>
         {
-            Debug.Log("Recived rpc");
             string teamName = args.GetNext<string>();
             Debug.Log("Creating team: " + teamName);
 
@@ -109,7 +106,6 @@ public class PlayerManager : PlayerManagerBehavior
     {
         MainThreadManager.Run(() =>
         {
-            Debug.Log("Recived rpc");
             string playerName = args.GetNext<string>();
             uint networkId = args.GetNext<uint>();
             Vector3 spawnpoint = GameManager.Instance.SpawnPoints[Convert.ToInt32(networkId)].position;
