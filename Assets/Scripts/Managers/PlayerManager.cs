@@ -123,7 +123,7 @@ public class PlayerManager : PlayerManagerBehavior
 
             if (networkObject.IsServer)
             {
-                player.PlayerDied.AddListener((() =>
+                player.OnPlayerDeath.AddListener((() =>
                 {
                     networkObject.SendRpc(RPC_PLAYER_DIED, Receivers.AllBuffered, player.PlayerNetworkId);
                 }));

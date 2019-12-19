@@ -36,4 +36,11 @@ public class HealthBarController : MonoBehaviour
 
         healthBar.fillAmount = healthSystem.Health / healthSystem.StartHealth;
     }
+
+    private void OnDestroy()
+    {
+        healthSystem.HealthChanged -= UpdateHealthBar;
+        healthSystem.OnDeath -= () => { canvas.gameObject.SetActive(false); };
+
+    }
 }

@@ -301,6 +301,22 @@ public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
     private void OnDestroy()
     {
         OnAttack -= AttackTarget;
+        healthSystem.HealthChanged -= () =>
+        {
+            if (networkObject.IsOwner)
+            {
+                if (Health <= 0)
+                {
+                    networkObject.SendRpc(RPC_DIE, Receivers.AllBuffered);
+                }
+
+                networkObject.Health = Health;
+            }
+            else
+            {
+                healthSystem.Health = networkObject.Health;
+            }
+        };
     }
 
     public override void MoveToPosition(RpcArgs args)

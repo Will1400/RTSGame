@@ -15,7 +15,7 @@ public class HQ : MonoBehaviour, ISelectable, IControlledByPlayer
 
     public Player Owner { get; set; }
 
-    public UnityEvent Die;
+    public UnityEvent OnDeath;
 
     [SerializeField]
     private HealthSystem healthSystem;
@@ -29,7 +29,7 @@ public class HQ : MonoBehaviour, ISelectable, IControlledByPlayer
 
         material = new Material(GetComponentInChildren<MeshRenderer>().material);
 
-        healthSystem.OnDeath += () => { Die.Invoke(); };
+        healthSystem.OnDeath += Die;
     }
 
     public void Select()
@@ -52,5 +52,16 @@ public class HQ : MonoBehaviour, ISelectable, IControlledByPlayer
             { "Health", Health },
             { "Defense", Defense }
         };
+    }
+
+    void Die()
+    {
+        OnDeath.Invoke();
+    }
+
+    private void OnDestroy()
+    {
+        healthSystem.OnDeath -= Die;
+
     }
 }

@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     public List<GameObject> Buildings;
     public List<GameObject> Units;
 
-    public UnityEvent PlayerDied;
+    public UnityEvent OnPlayerDeath;
 
     public List<GameObject> AllControlledObjects
     {
@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
         if (Team == null && transform.parent != null && transform.parent.TryGetComponent(out Team team))
             Team = team;
 
-        PlayerDied = new UnityEvent();
+        OnPlayerDeath = new UnityEvent();
 
         Buildings = Buildings ?? new List<GameObject>();
         Units = Units ?? new List<GameObject>();
@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
 
         HQ = Instantiate(BuildingManager.Instance.GetBuilding("HQ"), spawnpoint, Quaternion.identity, BuildingHolder);
         var hqComponent = HQ.GetComponent<HQ>();
-        hqComponent.Die.AddListener(() => { PlayerDied.Invoke(); });
+        hqComponent.OnDeath.AddListener(PlayerDied);
         hqComponent.Owner = this;
     }
 
@@ -71,5 +71,17 @@ public class Player : MonoBehaviour
         }
 
         return true;
+    }
+
+    void PlayerDied()
+    {
+        var hqComponent = HQ.GetComponent<HQ>();
+
+        hqComponent.OnDeath.RemoveListener(PlayerDied);
+    }
+
+    private void OnDestroy()
+    {
+        HQ.GetComponent<HQ>().OnDeath.RemoveListener(PlayerDied);
     }
 }
