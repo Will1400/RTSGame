@@ -47,6 +47,7 @@ public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
     [SerializeField]
     protected float attackRate;
 
+    [SerializeField] // to show in editor
     protected Transform target;
 
     protected float nextAttack;
@@ -129,23 +130,7 @@ public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
         healthSystem = GetComponent<HealthSystem>();
 
         networkObject.Health = Health;
-        healthSystem.HealthChanged += () =>
-        {
-            if (networkObject.IsOwner)
-            {
-                if (Health <= 0)
-                {
-                    networkObject.SendRpc(RPC_DIE, Receivers.AllBuffered);
-                }
-
-                networkObject.Health = Health;
-            }
-            else
-            {
-                healthSystem.Health = networkObject.Health;
-            }
-        };
-
+        healthSystem.OnDeath += Die;
         OnAttack += AttackTarget;
     }
 
@@ -171,7 +156,7 @@ public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
         };
     }
 
-    protected void GetNearbyTarget()
+    protected virtual void TargetNearbyEnemy()
     {
         if (!initialized)
             return;
@@ -206,7 +191,7 @@ public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
     {
         if (!IsInAttackRangeOfPosition(position))
         {
-            Vector3 targetPosition = position + ((transform.position - position).normalized * attackRange);
+            Vector3 targetPosition = position + ((transform.position - position).normalized * (attackRange + .2f));
             UnitState = UnitState.MoveAttacking;
             SendRpcMoveToPosition(targetPosition, true);
         }
@@ -218,7 +203,7 @@ public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
     /// <returns>True if the target can be attacked</returns>
     protected bool CanAttackTarget()
     {
-        return target != null && nextAttack < Time.time && IsInAttackRangeOfPosition(target.position);
+        return target != null && nextAttack <= Time.time && IsInAttackRangeOfPosition(target.position);
     }
 
     protected bool IsInAttackRangeOfPosition(Vector3 position)
@@ -288,35 +273,29 @@ public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
     {
         if (networkObject.IsOwner)
         {
+            networkObject.Health = Health;
             networkObject.Position = transform.position;
             networkObject.Rotation = transform.rotation;
         }
         else
         {
+            healthSystem.Health = networkObject.Health;
             transform.position = networkObject.Position;
             transform.rotation = networkObject.Rotation;
         }
     }
 
-    private void OnDestroy()
+    protected virtual void OnDestroy()
     {
         OnAttack -= AttackTarget;
-        healthSystem.HealthChanged -= () =>
-        {
-            if (networkObject.IsOwner)
-            {
-                if (Health <= 0)
-                {
-                    networkObject.SendRpc(RPC_DIE, Receivers.AllBuffered);
-                }
+        //healthSystem.OnDeath -= Die;
 
-                networkObject.Health = Health;
-            }
-            else
-            {
-                healthSystem.Health = networkObject.Health;
-            }
-        };
+    }
+
+    protected void Die()
+    {
+        healthSystem.OnDeath -= Die;
+        networkObject.SendRpc(RPC_DIE, Receivers.AllBuffered);
     }
 
     public override void MoveToPosition(RpcArgs args)
@@ -354,7 +333,7 @@ public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
             minimapIcon.color = owner.Color;
 
         ChangeColors();
-        player.Units.Add(gameObject);
+        owner.Units.Add(gameObject);
         transform.SetParent(player.UnitHolder);
     }
 }

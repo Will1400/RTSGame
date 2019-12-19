@@ -58,4 +58,5 @@ MonoBehaviour:
   UnitNetworkObject:
   - {fileID: 5514335657491701633, guid: a40f4bcd654c340439259118576ac5e1, type: 3}
   - {fileID: 1002660251842647416, guid: 245700affb8c57f4498c6e9bc7c10137, type: 3}
+  - {fileID: 1893087975082885295, guid: f37dd638cbf62804b853c7da6b0a5dfa, type: 3}
   automaticScenes: 1

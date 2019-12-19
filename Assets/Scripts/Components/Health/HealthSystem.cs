@@ -38,6 +38,8 @@ public class HealthSystem : MonoBehaviour, IDamageable
         set { defenseType = value; }
     }
 
+    public bool IsAtMaxHealth { get { return health >= startHealth; } }
+
     public Action HealthChanged;
     public Action OnDeath;
 

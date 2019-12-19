@@ -3,7 +3,7 @@ using System.Collections;
 
 public class RangedUnit : Unit
 {
-    [Header("Ranged Specific")]
+    [Header("Ranged Unit Specific")]
     [Space(10)]
     [SerializeField]
     private ParticleSystem shootEffect;
@@ -18,7 +18,7 @@ public class RangedUnit : Unit
         if (!initialized)
             return;
 
-        if (target != null && IsTargetOutOfRange())
+        if (target == null || (target != null && IsTargetOutOfRange()))
         {
             target = null;
             if (UnitState != UnitState.Walking)
@@ -43,7 +43,7 @@ public class RangedUnit : Unit
             }
             else
             {
-                GetNearbyTarget();
+                TargetNearbyEnemy();
             }
         }
     }

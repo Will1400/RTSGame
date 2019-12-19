@@ -9,7 +9,7 @@ public class MeleeUnit : Unit
         if (!initialized)
             return;
 
-        if (target != null && IsTargetOutOfRange())
+        if (target == null || (target != null && IsTargetOutOfRange()))
         {
             target = null;
             if (UnitState != UnitState.Walking)
@@ -33,7 +33,7 @@ public class MeleeUnit : Unit
             }
             else
             {
-                GetNearbyTarget();
+                TargetNearbyEnemy();
             }
         }
     }
