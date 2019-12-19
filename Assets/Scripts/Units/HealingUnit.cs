@@ -118,4 +118,14 @@ public class HealingUnit : Unit
 
         OnHeal -= HealTarget;
     }
+
+    public override Dictionary<string, float> GetStats()
+    {
+        return new Dictionary<string, float>
+        {
+            { "Health", Health },
+            { "Healing", healing },
+            { "Defense", Defense }
+        };
+    }
 }
