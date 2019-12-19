@@ -8,6 +8,7 @@ using UnityEngine.Events;
 using BeardedManStudios.Forge.Networking.Unity;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System;
 
 [RequireComponent(typeof(HealthSystem))]
 public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
@@ -106,6 +107,10 @@ public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
 
     #endregion
 
+    #region Events
+    public Action OnAttack;
+    #endregion
+
     protected override void NetworkStart()
     {
         base.NetworkStart();
@@ -140,6 +145,8 @@ public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
                 healthSystem.Health = networkObject.Health;
             }
         };
+
+        OnAttack += AttackTarget;
     }
 
     protected virtual void ChangeColors()
@@ -289,6 +296,11 @@ public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
             transform.position = networkObject.Position;
             transform.rotation = networkObject.Rotation;
         }
+    }
+
+    private void OnDestroy()
+    {
+        OnAttack -= AttackTarget;
     }
 
     public override void MoveToPosition(RpcArgs args)

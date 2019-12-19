@@ -21,7 +21,7 @@ public class MeleeUnit : Unit
             {
                 if (CanAttackTarget())
                 {
-                    AttackTarget();
+                    OnAttack.Invoke();
 
                     if (agent.hasPath)
                         agent.ResetPath();

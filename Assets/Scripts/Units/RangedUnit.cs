@@ -31,7 +31,7 @@ public class RangedUnit : Unit
             {
                 if (CanAttackTarget())
                 {
-                    AttackTarget();
+                    OnAttack.Invoke();
 
                     if (agent.hasPath)
                         agent.ResetPath();
