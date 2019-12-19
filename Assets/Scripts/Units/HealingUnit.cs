@@ -24,6 +24,7 @@ public class HealingUnit : Unit
     {
         base.Setup();
 
+        healingEffect.Stop();
         OnHeal += HealTarget;
     }
 
@@ -59,7 +60,7 @@ public class HealingUnit : Unit
                 else if (UnitState != UnitState.MoveAttacking || target.position != agent.pathEndPosition)
                 {
                     MoveIntoAttackRange(target.position);
-                    
+
                 }
             }
             else
@@ -78,6 +79,10 @@ public class HealingUnit : Unit
     {
         if (target == null && nextHeal <= Time.time)
             return;
+
+        if (healingEffect.transform.position != target.position - new Vector3(0, .3f))
+            healingEffect.transform.position = target.position - new Vector3(0, .3f);
+        healingEffect.Emit(20);
 
         target.GetComponent<IDamageable>().Heal(healing);
         nextHeal = Time.time + healRate;

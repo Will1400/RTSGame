@@ -191,7 +191,7 @@ public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
     {
         if (!IsInAttackRangeOfPosition(position))
         {
-            Vector3 targetPosition = position + ((transform.position - position).normalized * (attackRange + .2f));
+            Vector3 targetPosition = position + ((transform.position - position).normalized * (attackRange - .2f));
             UnitState = UnitState.MoveAttacking;
             SendRpcMoveToPosition(targetPosition, true);
         }
