@@ -41,6 +41,5 @@ public class HealthBarController : MonoBehaviour
     {
         healthSystem.HealthChanged -= UpdateHealthBar;
         healthSystem.OnDeath -= () => { canvas.gameObject.SetActive(false); };
-
     }
 }
