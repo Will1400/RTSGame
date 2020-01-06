@@ -2,21 +2,32 @@
 using System.Collections;
 using System.Linq;
 using UnityEngine.AI;
+using BeardedManStudios.Forge.Networking.Generated;
+using BeardedManStudios.Forge.Networking;
+using UnityEngine.Events;
+using BeardedManStudios.Forge.Networking.Unity;
+using System.Collections.Generic;
+using UnityEngine.UI;
+using System;
 
-public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, ISelectable
+[RequireComponent(typeof(HealthSystem))]
+public abstract class Unit : UnitBehavior, IControlledByPlayer, ISelectable
 {
     #region Fields
     [SerializeField]
     protected Player owner;
 
     [SerializeField]
+    private Image minimapIcon;
+
+    [SerializeField]
+    private GameObject selectedIndicator;
+
+    [SerializeField]
     protected string unitName;
 
     [SerializeField]
     protected float cost;
-
-    [SerializeField]
-    protected float health;
 
     [SerializeField]
     protected float damage;
@@ -36,12 +47,7 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
     [SerializeField]
     protected float attackRate;
 
-    [SerializeField]
-    protected float defense;
-
-    [SerializeField]
-    protected DefenseType defenseType;
-
+    [SerializeField] // to show in editor
     protected Transform target;
 
     protected float nextAttack;
@@ -49,10 +55,14 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
     protected NavMeshAgent agent;
 
     protected LineRenderer lineRenderer;
+
+    protected bool initialized;
+
+    protected HealthSystem healthSystem;
+
     #endregion
 
-    private Material Material;
-
+    #region Properties
     public Player Owner
     {
         get { return owner; }
@@ -61,74 +71,99 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
 
     public float Health
     {
-        get { return health; }
-        set { health = value; }
+        get { return healthSystem.Health; }
     }
 
     public float Defense
     {
-        get { return defense; }
-        set { defense = value; }
+        get { return healthSystem.Defense; }
     }
 
     public DefenseType DefenseType
     {
-        get { return defenseType; }
-        set { defenseType = value; }
+        get { return healthSystem.DefenseType; }
     }
 
     public bool IsSelected { get; set; }
 
-    public virtual void Damage(float amount, DamageType damageType)
+    public string UnitName
     {
-        switch (defenseType)
+        get
         {
-            case DefenseType.All:
-                amount -= defense;
-                break;
-            case DefenseType.AllLight:
-                if (damageType.HasFlag(DamageType.LightMelee) || damageType.HasFlag(DamageType.LightRanged))
-                    amount -= defense;
-                break;
-            case DefenseType.AllHeavy:
-                if (damageType.HasFlag(DamageType.HeavyMelee) || damageType.HasFlag(DamageType.HeavyRanged))
-                    amount -= defense;
-                break;
-            case DefenseType.LightMelee:
-                if (damageType.HasFlag(DamageType.LightMelee))
-                    amount -= defense;
-                break;
-            case DefenseType.HeavyMelee:
-                if (damageType.HasFlag(DamageType.HeavyMelee))
-                    amount -= defense;
-                break;
-            case DefenseType.LightRanged:
-                if (damageType.HasFlag(DamageType.LightRanged))
-                    amount -= defense;
-                break;
-            case DefenseType.HeavyRanged:
-                if (damageType.HasFlag(DamageType.HeavyRanged))
-                    amount -= defense;
-                break;
-            default:
-                break;
-        }
-
-        if (amount < 0)
-            amount = 0;
-
-        health -= amount;
-
-        if (health <= 0)
-        {
-            Destroy(gameObject);
+            return unitName;
         }
     }
 
-    protected void GetNearbyTarget()
+    public UnitState UnitState
     {
+        get
+        {
+            return (UnitState)networkObject.UnitState;
+        }
+        set
+        {
+            networkObject.UnitState = (byte)value;
+        }
+    }
+
+    #endregion
+
+    #region Events
+    public Action OnAttack;
+    #endregion
+
+    protected override void NetworkStart()
+    {
+        base.NetworkStart();
+        Setup();
+
+        initialized = true;
+    }
+
+    protected virtual void Setup()
+    {
+        if (TryGetComponent(out NavMeshAgent _agent))
+        {
+            agent = _agent;
+            agent.speed = speed;
+        }
+        healthSystem = GetComponent<HealthSystem>();
+
+        networkObject.Health = Health;
+        healthSystem.OnDeath += Die;
+        OnAttack += AttackTarget;
+    }
+
+    protected virtual void ChangeColors()
+    {
+        Color mainColor = owner.Color;
+        Renderer renderer;
+        if (transform.Find("Goggles"))
+            renderer = transform.Find("Goggles").GetComponent<Renderer>();
+        else
+            renderer = transform.Find("Model/Goggles").GetComponent<Renderer>();
+
+        renderer.material.SetColor("_BaseColor", mainColor);
+    }
+
+    public virtual Dictionary<string, float> GetStats()
+    {
+        return new Dictionary<string, float>
+        {
+            { "Health", Health },
+            { "Damage", damage },
+            { "Defense", Defense }
+        };
+    }
+
+    protected virtual void TargetNearbyEnemy()
+    {
+        if (!initialized)
+            return;
+
         // Gets all possible targets not controlled by the team
-        var possibleTargets = Physics.OverlapSphere(transform.position, visionRange, LayerMask.GetMask("Units", "Buildings")).Where(x => x.GetComponent<IControlledByPlayer>() != null).ToList();
+        var possibleTargets = Physics.OverlapSphere(transform.position, visionRange, LayerMask.GetMask("Units", "Buildings")).ToList();
+        possibleTargets.RemoveAll(x => x.GetComponent<IControlledByPlayer>() == null);
         possibleTargets.RemoveAll(x => Player.IsOnSameTeam(this, x.GetComponent<IControlledByPlayer>()));
 
         float shortestDistance = Mathf.Infinity;
@@ -143,38 +178,22 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
         }
     }
 
-    protected virtual void Start()
-    {
-        Setup();
-    }
-
-    protected virtual void Setup()
-    {
-        if (TryGetComponent(out NavMeshAgent _agent))
-        {
-            agent = _agent;
-            agent.speed = speed;
-        }
-
-        Material = new Material(GetComponent<Renderer>().material);
-    }
-
     protected bool IsTargetOutOfRange()
     {
         return target != null && Vector3.Distance(transform.position, target.position) > visionRange;
     }
 
-    public virtual void MoveToPosition(Vector3 position)
-    {
-        agent.SetDestination(position);
-    }
-
+    /// <summary>
+    /// Moves into attacking range of a specific position
+    /// </summary>
+    /// <param name="position">Position to move within attack range of</param>
     public virtual void MoveIntoAttackRange(Vector3 position)
     {
-        if (!IsInAttackRangeOfPosition((position)))
+        if (!IsInAttackRangeOfPosition(position))
         {
-            Vector3 targetPosition = position + ((transform.position - position).normalized * attackRange);
-            MoveToPosition(targetPosition);
+            Vector3 targetPosition = position + ((transform.position - position).normalized * (attackRange - .2f));
+            UnitState = UnitState.MoveAttacking;
+            SendRpcMoveToPosition(targetPosition, true);
         }
     }
 
@@ -184,7 +203,7 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
     /// <returns>True if the target can be attacked</returns>
     protected bool CanAttackTarget()
     {
-        return target != null && nextAttack < Time.time && IsInAttackRangeOfPosition(target.position);
+        return target != null && nextAttack <= Time.time && IsInAttackRangeOfPosition(target.position);
     }
 
     protected bool IsInAttackRangeOfPosition(Vector3 position)
@@ -201,25 +220,120 @@ public abstract class Unit : MonoBehaviour, IDamageable, IControlledByPlayer, IS
     /// <summary>
     /// Attacks the current target without any checks
     /// </summary>
-    protected void AttackTarget()
+    protected virtual void AttackTarget()
     {
         if (target == null)
             return;
 
+        transform.LookAt(target);
         target.GetComponent<IDamageable>().Damage(damage, damageType);
         nextAttack = Time.time + attackRate;
     }
 
     public void Select()
     {
-        Renderer renderer = GetComponent<MeshRenderer>();
-        renderer.material.SetColor("_BaseColor", Color.green);
+        selectedIndicator.SetActive(true);
         IsSelected = true;
     }
 
     public void Deselect()
     {
-        GetComponent<MeshRenderer>().material = Material;
+        selectedIndicator.SetActive(false);
         IsSelected = false;
+    }
+
+    public virtual void SendRpcMoveToPosition(Vector3 position, bool keepState = false)
+    {
+        if (!keepState)
+        {
+            UnitState = UnitState.Walking;
+        }
+
+        networkObject.SendRpc(RPC_MOVE_TO_POSITION, Receivers.All, position);
+    }
+
+    public virtual void SendRpcOrderStop()
+    {
+        UnitState = UnitState.Idle;
+        networkObject.SendRpc(RPC_ORDER_STOP, Receivers.All);
+    }
+
+    protected void FixedUpdate()
+    {
+        if (!initialized)
+            return;
+
+        if (!agent.hasPath)
+            UnitState = UnitState.Idle;
+
+        SyncObject();
+    }
+
+    protected void SyncObject()
+    {
+        if (networkObject.IsOwner)
+        {
+            networkObject.Health = Health;
+            networkObject.Position = transform.position;
+            networkObject.Rotation = transform.rotation;
+        }
+        else
+        {
+            healthSystem.Health = networkObject.Health;
+            transform.position = networkObject.Position;
+            transform.rotation = networkObject.Rotation;
+        }
+    }
+
+    protected virtual void OnDestroy()
+    {
+        OnAttack -= AttackTarget;
+        //healthSystem.OnDeath -= Die;
+
+    }
+
+    protected void Die()
+    {
+        healthSystem.OnDeath -= Die;
+        networkObject.SendRpc(RPC_DIE, Receivers.AllBuffered);
+    }
+
+    public override void MoveToPosition(RpcArgs args)
+    {
+        if (agent != null)
+            agent.SetDestination(args.GetNext<Vector3>());
+    }
+
+    public override void Die(RpcArgs args)
+    {
+        if (networkObject.IsOwner)
+        {
+            SelectionManager.Instance.Selected.Remove(transform);
+            PlayerUiManager.Instance.UpdateLocalPlayerInfo();
+        }
+        if (gameObject != null)
+        {
+            PlayerManager.Instance.GetPlayer(owner.PlayerNetworkId).Units.Remove(gameObject);
+        }
+
+        Destroy(gameObject);
+    }
+
+    public override void OrderStop(RpcArgs args)
+    {
+        target = null;
+        agent.ResetPath();
+    }
+
+    public override void AssignToPlayer(RpcArgs args)
+    {
+        Player player = PlayerManager.Instance.GetPlayer(args.GetNext<uint>());
+        owner = player;
+        if (minimapIcon != null)
+            minimapIcon.color = owner.Color;
+
+        ChangeColors();
+        owner.Units.Add(gameObject);
+        transform.SetParent(player.UnitHolder);
     }
 }

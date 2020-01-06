@@ -3,32 +3,54 @@ using System.Collections;
 
 public class RangedUnit : Unit
 {
+    [Header("Ranged Unit Specific")]
+    [Space(10)]
+    [SerializeField]
+    private ParticleSystem shootEffect;
+
+    private void Awake()
+    {
+        shootEffect.Stop();
+    }
+
     protected virtual void Update()
     {
-        if (IsTargetOutOfRange())
+        if (!initialized)
+            return;
+
+        if (target == null || (target != null && IsTargetOutOfRange()))
         {
             target = null;
-            agent.ResetPath();
+            if (UnitState != UnitState.Walking)
+                agent.ResetPath();
         }
 
-        if (target != null)
+        if (UnitState != UnitState.Walking)
         {
-            if (CanAttackTarget())
+            if (target != null)
             {
-                AttackTarget();
+                if (CanAttackTarget())
+                {
+                    OnAttack.Invoke();
 
-                if (agent.hasPath)
-                    agent.ResetPath();
+                    if (agent.hasPath)
+                        agent.ResetPath();
+                }
+                else if (UnitState != UnitState.MoveAttacking)
+                {
+                    MoveIntoAttackRange(target.position);
+                }
             }
             else
             {
-                MoveIntoAttackRange(target.position); 
+                TargetNearbyEnemy();
             }
+        }
+    }
 
-        }
-        else
-        {
-            GetNearbyTarget();
-        }
+    protected override void AttackTarget()
+    {
+        shootEffect.Emit(1);
+        base.AttackTarget();
     }
 }

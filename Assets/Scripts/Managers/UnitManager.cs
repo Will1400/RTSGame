@@ -23,4 +23,14 @@ public class UnitManager : MonoBehaviour
     {
         return unitPrefabs.First(x => x.name == unitName);
     }
+
+    public GameObject GetUnit(int unitIndex)
+    {
+        return unitPrefabs[unitIndex];
+    }
+
+    public int GetIndexOfUnitName(string unitName)
+    {
+        return unitPrefabs.Select(x => x.name).ToList().IndexOf(unitName);
+    }
 }

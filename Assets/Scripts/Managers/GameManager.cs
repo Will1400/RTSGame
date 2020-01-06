@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BeardedManStudios.Forge.Networking.Unity;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,8 +15,7 @@ public class GameManager : MonoBehaviour
 
     public Player ControllingPlayer;
 
-    [SerializeField]
-    private List<Transform> spawnPoints;
+    public List<Transform> SpawnPoints;
 
     private void Awake()
     {
@@ -26,19 +27,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        SpawnPlayers();
     }
 
-    private void SpawnPlayers()
-    {
-        int count = 0;
-        foreach (Team team in TeamManager.Instance.Teams)
-        {
-            foreach (Player player in team.Players)
-            {
-                player.Initialize(Instantiate(BuildingManager.Instance.GetBuilding("HQ"), spawnPoints[count].position, Quaternion.identity , player.transform));
-                count++;
-            }
-        }
-    }
 }

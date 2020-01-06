@@ -4,32 +4,37 @@ using UnityEngine;
 
 public class MeleeUnit : Unit
 {
-    protected virtual void Update()
+    protected void Update()
     {
-        if (IsTargetOutOfRange())
+        if (!initialized)
+            return;
+
+        if (target == null || (target != null && IsTargetOutOfRange()))
         {
             target = null;
-            agent.ResetPath();
+            if (UnitState != UnitState.Walking)
+                agent.ResetPath();
         }
-
-        if (target != null)
+        if (UnitState != UnitState.Walking)
         {
-            if (CanAttackTarget())
+            if (target != null)
             {
-                AttackTarget();
+                if (CanAttackTarget())
+                {
+                    OnAttack.Invoke();
 
-                if (agent.hasPath)
-                    agent.ResetPath();
+                    if (agent.hasPath)
+                        agent.ResetPath();
+                }
+                else if (UnitState != UnitState.MoveAttacking)
+                {
+                    MoveIntoAttackRange(target.position);
+                }
             }
             else
             {
-                MoveToPosition(target.position);
+                TargetNearbyEnemy();
             }
-
-        }
-        else
-        {
-            GetNearbyTarget();
         }
     }
 }

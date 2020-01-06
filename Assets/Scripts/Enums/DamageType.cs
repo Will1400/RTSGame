@@ -9,5 +9,6 @@ public enum DamageType
     LightMelee = 1,
     HeavyMelee = 2,
     LightRanged = 4,
-    HeavyRanged = 8
+    HeavyRanged = 8,
+    Healing
 }

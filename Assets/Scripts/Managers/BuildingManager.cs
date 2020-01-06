@@ -22,4 +22,14 @@ public class BuildingManager : MonoBehaviour
     {
         return buildingPrefabs.First(x => x.name == buildingName);
     }
+
+    public GameObject GetBuilding(int buildingIndex)
+    {
+        return buildingPrefabs[buildingIndex];
+    }
+
+    public int GetIndexOfBuildingName(string buildingName)
+    {
+        return buildingPrefabs.Select(x => x.name).ToList().IndexOf(buildingName);
+    }
 }

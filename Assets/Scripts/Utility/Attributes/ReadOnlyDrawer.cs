@@ -1,14 +1,10 @@
-﻿//using System.Collections.Generic;
-//using UnityEditor;
+﻿//using UnityEditor;
 //using UnityEngine;
 
 ///// <summary>
 ///// Disables editing in the unity editor
 ///// </summary>
-//public class ReadOnlyAttribute : PropertyAttribute
-//{
-
-//}
+//public class ReadOnlyAttribute : PropertyAttribute { }
 
 //[CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
 //public class ReadOnlyDrawer : PropertyDrawer
